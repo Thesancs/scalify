@@ -9,12 +9,36 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Copy, ShieldCheck, Upload } from 'lucide-react';
+import { Copy, ShieldCheck, Upload, TrendingUp, BarChart2 } from 'lucide-react';
 
-const ofertasMock = [
-  'Curso X – R$297',
-  'E-book Y – R$47',
-  'Mentoria Z – R$997',
+const ofertasEscaladas = [
+  {
+    title: 'Método de 7 Segundos',
+    type: 'Infoproduto',
+    format: 'VSL',
+    ads: 670,
+    roas: 2,
+    ticket: 297,
+    status: 'escalando',
+  },
+  {
+    title: 'Bactéria Gordurosa',
+    type: 'Encapsulado',
+    format: 'Landing Page',
+    ads: 180,
+    roas: 2,
+    ticket: 467,
+    status: 'escalando',
+  },
+  {
+    title: '100 Receitas Ricas em Proteínas',
+    type: 'Infoproduto',
+    format: 'Quiz',
+    ads: 140,
+    roas: 2,
+    ticket: 30,
+    status: 'risco',
+  },
 ];
 
 export default function DashboardPage() {
@@ -29,26 +53,55 @@ export default function DashboardPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {/* Card de Ofertas */}
-        <Card className="flex flex-col rounded-2xl border-primary/50 bg-card/60 shadow-lg backdrop-blur-sm transition-transform duration-300 hover:scale-[1.02] hover:shadow-primary/20">
-          <CardHeader>
-            <CardTitle className="text-xl text-foreground">Ofertas</CardTitle>
-          </CardHeader>
-          <CardContent className="flex-grow">
-            <ul className="space-y-2 text-muted-foreground">
-              {ofertasMock.map((oferta, index) => (
-                <li key={index} className="text-sm">{oferta}</li>
-              ))}
-            </ul>
-          </CardContent>
-          <CardFooter>
-            <Button variant="secondary" className="w-full">
-              Ver todas ofertas
-            </Button>
-          </CardFooter>
-        </Card>
+      <div className="flex flex-col gap-8">
+        <div>
+            <h2 className="text-2xl font-bold tracking-tight text-foreground mb-4">
+                Ofertas Escaladas
+            </h2>
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {ofertasEscaladas.map((oferta) => (
+                    <Card
+                        key={oferta.title}
+                        className={`flex flex-col rounded-2xl bg-card/60 shadow-lg backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] hover:shadow-primary/20 border-2 ${
+                            oferta.status === 'escalando' ? 'border-green-500' : 'border-red-500'
+                        }`}
+                    >
+                        <CardHeader className="pb-4">
+                            <CardTitle className="text-xl font-bold text-foreground">{oferta.title}</CardTitle>
+                        </CardHeader>
+                        <CardContent className="flex-grow space-y-4">
+                            <div className="flex flex-wrap gap-2">
+                                <Badge variant="default" className="bg-primary hover:bg-primary/80">{oferta.type}</Badge>
+                                <Badge variant="secondary" className="bg-secondary hover:bg-secondary/80">{oferta.format}</Badge>
+                            </div>
+                            <div className="space-y-2 text-sm text-muted-foreground">
+                                <div className="flex items-center justify-between">
+                                    <span className="flex items-center gap-2"><BarChart2 className="h-4 w-4" /> Anúncios Ativos:</span>
+                                    <span className="font-bold text-foreground">{oferta.ads}</span>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <span className="flex items-center gap-2"><TrendingUp className="h-4 w-4" /> ROAS:</span>
+                                    <span className="font-bold text-foreground">{oferta.roas}x</span>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <span>Ticket Médio:</span>
+                                    <span className="font-bold text-foreground">R${oferta.ticket}</span>
+                                </div>
+                            </div>
+                        </CardContent>
+                        <CardFooter>
+                             <div className={`w-full text-center text-xs font-bold ${oferta.status === 'escalando' ? 'text-green-500' : 'text-red-500'}`}>
+                                {oferta.status === 'escalando' ? 'Escalando' : 'Em Risco'}
+                            </div>
+                        </CardFooter>
+                    </Card>
+                ))}
+            </div>
+        </div>
+      </div>
 
+
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {/* Card Anticlone */}
         <Card className="flex flex-col rounded-2xl border-secondary/50 bg-card/60 shadow-lg backdrop-blur-sm transition-transform duration-300 hover:scale-[1.02] hover:shadow-secondary/20">
           <CardHeader>
