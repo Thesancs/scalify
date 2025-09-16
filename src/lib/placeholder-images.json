@@ -5,6 +5,24 @@
       "description": "A placeholder for the user's avatar in the header.",
       "imageUrl": "https://picsum.photos/seed/user-avatar/40/40",
       "imageHint": "person avatar"
+    },
+    {
+      "id": "oferta-1",
+      "description": "Cover image for the 'Método de 7 Segundos' offer.",
+      "imageUrl": "https://picsum.photos/seed/oferta-1/600/400",
+      "imageHint": "abstract technology"
+    },
+    {
+      "id": "oferta-2",
+      "description": "Cover image for the 'Bactéria Gordurosa' offer.",
+      "imageUrl": "https://picsum.photos/seed/oferta-2/600/400",
+      "imageHint": "health science"
+    },
+    {
+      "id": "oferta-3",
+      "description": "Cover image for the '100 Receitas Ricas em Proteínas' offer.",
+      "imageUrl": "https://picsum.photos/seed/oferta-3/600/400",
+      "imageHint": "healthy food"
     }
   ]
 }

@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Copy, ShieldCheck, Upload, TrendingUp, BarChart2 } from 'lucide-react';
+import Image from 'next/image';
 
 const ofertasEscaladas = [
   {
@@ -20,6 +21,8 @@ const ofertasEscaladas = [
     roas: 2,
     ticket: 297,
     status: 'escalando',
+    imageUrl: 'https://picsum.photos/seed/oferta-1/600/400',
+    imageHint: 'abstract technology',
   },
   {
     title: 'Bactéria Gordurosa',
@@ -29,6 +32,8 @@ const ofertasEscaladas = [
     roas: 2,
     ticket: 467,
     status: 'escalando',
+    imageUrl: 'https://picsum.photos/seed/oferta-2/600/400',
+    imageHint: 'health science',
   },
   {
     title: '100 Receitas Ricas em Proteínas',
@@ -38,6 +43,8 @@ const ofertasEscaladas = [
     roas: 2,
     ticket: 30,
     status: 'risco',
+    imageUrl: 'https://picsum.photos/seed/oferta-3/600/400',
+    imageHint: 'healthy food',
   },
 ];
 
@@ -62,10 +69,19 @@ export default function DashboardPage() {
                 {ofertasEscaladas.map((oferta) => (
                     <Card
                         key={oferta.title}
-                        className={`flex flex-col rounded-2xl bg-card/60 shadow-lg backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] hover:shadow-primary/20 border-2 ${
+                        className={`flex flex-col rounded-2xl bg-card/60 shadow-lg backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] hover:shadow-primary/20 border-2 overflow-hidden ${
                             oferta.status === 'escalando' ? 'border-green-500' : 'border-red-500'
                         }`}
                     >
+                        <div className="relative w-full aspect-video">
+                            <Image
+                                src={oferta.imageUrl}
+                                alt={`Capa da oferta ${oferta.title}`}
+                                fill
+                                className="object-cover"
+                                data-ai-hint={oferta.imageHint}
+                            />
+                        </div>
                         <CardHeader className="pb-4">
                             <CardTitle className="text-xl font-bold text-foreground">{oferta.title}</CardTitle>
                         </CardHeader>
