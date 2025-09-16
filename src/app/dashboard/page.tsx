@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Copy, ShieldCheck, Upload, TrendingUp, BarChart2 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import React from 'react';
 
 const ofertasEscaladas = [
   {
@@ -76,9 +77,7 @@ export default function DashboardPage() {
                 {ofertasEscaladas.map((oferta) => (
                     <Link href={`/dashboard/ofertas/${oferta.id}`} key={oferta.id} className="cursor-pointer">
                         <Card
-                            className={`flex flex-col h-full rounded-2xl glassmorphic transition-all duration-300 hover:scale-[1.02] hover:shadow-primary/20 border-2 overflow-hidden ${
-                                oferta.status === 'escalando' ? 'border-green-500/50' : 'border-red-500/50'
-                            }`}
+                            className={`flex flex-col h-full rounded-2xl glassmorphic transition-all duration-300 hover:scale-[1.02] hover:border-primary overflow-hidden`}
                         >
                             <div className="relative w-full aspect-video">
                                 <Image
@@ -113,9 +112,12 @@ export default function DashboardPage() {
                                 </div>
                             </CardContent>
                             <CardFooter>
-                                 <div className={`w-full text-center text-xs font-bold ${oferta.status === 'escalando' ? 'text-green-500' : 'text-red-500'}`}>
+                                 <Badge
+                                    variant={oferta.status === 'escalando' ? 'default' : 'destructive'}
+                                    className={`w-full justify-center ${oferta.status === 'escalando' ? 'bg-green-500/20 text-green-400 border-green-500/30' : 'bg-red-500/20 text-red-400 border-red-500/30'}`}
+                                >
                                     {oferta.status === 'escalando' ? 'Escalando' : 'Em Risco'}
-                                </div>
+                                </Badge>
                             </CardFooter>
                         </Card>
                     </Link>
@@ -127,7 +129,7 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {/* Card Anticlone */}
-        <Card className="flex flex-col rounded-2xl glassmorphic transition-transform duration-300 hover:scale-[1.02] hover:shadow-primary/20">
+        <Card className="flex flex-col rounded-2xl glassmorphic transition-all duration-300 hover:scale-[1.02] hover:border-primary">
           <CardHeader>
             <CardTitle className="flex items-center justify-between text-xl text-foreground">
               <span>Proteções ativas</span>
@@ -149,7 +151,7 @@ export default function DashboardPage() {
         </Card>
 
         {/* Card Clonador de Ofertas */}
-        <Card className="flex flex-col rounded-2xl glassmorphic transition-transform duration-300 hover:scale-[1.02] hover:shadow-primary/20">
+        <Card className="flex flex-col rounded-2xl glassmorphic transition-all duration-300 hover:scale-[1.02] hover:border-primary">
           <CardHeader>
             <CardTitle className="flex items-center justify-between text-xl text-foreground">
              <span>Clonar Oferta</span>
@@ -169,7 +171,7 @@ export default function DashboardPage() {
         </Card>
 
         {/* Card Removedor de Metadados */}
-        <Card className="flex flex-col rounded-2xl glassmorphic transition-transform duration-300 hover:scale-[1.02] hover:shadow-primary/20">
+        <Card className="flex flex-col rounded-2xl glassmorphic transition-all duration-300 hover:scale-[1.02] hover:border-primary">
           <CardHeader>
             <CardTitle className="flex items-center justify-between text-xl text-foreground">
               <span>Limpador de Metadados</span>
