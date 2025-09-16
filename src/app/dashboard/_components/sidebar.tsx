@@ -17,6 +17,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
   SidebarSeparator,
+  useSidebar,
 } from '@/components/ui/sidebar';
 import { Sidebar } from '@/components/ui/sidebar';
 import React from 'react';
@@ -32,6 +33,11 @@ const menuItems = [
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const { setOpenMobile } = useSidebar();
+
+  const handleLinkClick = () => {
+    setOpenMobile(false);
+  };
 
   return (
     <Sidebar className="border-r border-white/10 bg-black/40 backdrop-blur-xl" collapsible="icon">
@@ -39,6 +45,7 @@ export function AppSidebar() {
         <Link
           href="/dashboard"
           className="flex items-center gap-2.5"
+          onClick={handleLinkClick}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -71,6 +78,7 @@ export function AppSidebar() {
                   className="group h-auto gap-3 py-3 px-4 text-base transition-all duration-300 hover:bg-white/10 data-[active=true]:bg-white/15 data-[active=true]:text-primary"
                   isActive={pathname.startsWith(item.href) && (item.href !== '/dashboard' || pathname === '/dashboard')}
                   tooltip={item.label}
+                  onClick={handleLinkClick}
                 >
                   <Link href={item.href}>
                     <item.icon className="h-6 w-6 group-data-[active=true]:text-primary" />
