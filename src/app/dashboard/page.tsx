@@ -76,8 +76,8 @@ export default function DashboardPage() {
                 {ofertasEscaladas.map((oferta) => (
                     <Link href={`/dashboard/ofertas/${oferta.id}`} key={oferta.id} className="cursor-pointer">
                         <Card
-                            className={`flex flex-col h-full rounded-2xl bg-card/60 shadow-lg backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] hover:shadow-secondary/20 border-2 overflow-hidden ${
-                                oferta.status === 'escalando' ? 'border-green-500' : 'border-red-500'
+                            className={`flex flex-col h-full rounded-2xl glassmorphic transition-all duration-300 hover:scale-[1.02] hover:shadow-primary/20 border-2 overflow-hidden ${
+                                oferta.status === 'escalando' ? 'border-green-500/50' : 'border-red-500/50'
                             }`}
                         >
                             <div className="relative w-full aspect-video">
@@ -95,7 +95,7 @@ export default function DashboardPage() {
                             <CardContent className="flex-grow space-y-4">
                                 <div className="flex flex-wrap gap-2">
                                     <Badge variant="secondary">{oferta.type}</Badge>
-                                    <Badge variant="outline" className="border-secondary/50 text-secondary">{oferta.format}</Badge>
+                                    <Badge variant="outline" className="border-primary/50 text-primary">{oferta.format}</Badge>
                                 </div>
                                 <div className="space-y-2 text-sm text-muted-foreground">
                                     <div className="flex items-center justify-between">
@@ -127,7 +127,7 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {/* Card Anticlone */}
-        <Card className="flex flex-col rounded-2xl border-secondary/50 bg-card/60 shadow-lg backdrop-blur-sm transition-transform duration-300 hover:scale-[1.02] hover:shadow-secondary/20">
+        <Card className="flex flex-col rounded-2xl glassmorphic transition-transform duration-300 hover:scale-[1.02] hover:shadow-primary/20">
           <CardHeader>
             <CardTitle className="flex items-center justify-between text-xl text-foreground">
               <span>Proteções ativas</span>
@@ -149,7 +149,7 @@ export default function DashboardPage() {
         </Card>
 
         {/* Card Clonador de Ofertas */}
-        <Card className="flex flex-col rounded-2xl border-primary/50 bg-card/60 shadow-lg backdrop-blur-sm transition-transform duration-300 hover:scale-[1.02] hover:shadow-primary/20">
+        <Card className="flex flex-col rounded-2xl glassmorphic transition-transform duration-300 hover:scale-[1.02] hover:shadow-primary/20">
           <CardHeader>
             <CardTitle className="flex items-center justify-between text-xl text-foreground">
              <span>Clonar Oferta</span>
@@ -169,11 +169,11 @@ export default function DashboardPage() {
         </Card>
 
         {/* Card Removedor de Metadados */}
-        <Card className="flex flex-col rounded-2xl border-secondary/50 bg-card/60 shadow-lg backdrop-blur-sm transition-transform duration-300 hover:scale-[1.02] hover:shadow-secondary/20">
+        <Card className="flex flex-col rounded-2xl glassmorphic transition-transform duration-300 hover:scale-[1.02] hover:shadow-primary/20">
           <CardHeader>
             <CardTitle className="flex items-center justify-between text-xl text-foreground">
               <span>Limpador de Metadados</span>
-              <Upload className="h-5 w-5 text-secondary" />
+              <Upload className="h-5 w-5 text-primary" />
             </CardTitle>
           </CardHeader>
           <CardContent className="flex-grow">

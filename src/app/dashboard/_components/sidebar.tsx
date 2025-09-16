@@ -32,7 +32,7 @@ export function AppSidebar() {
   const pathname = usePathname();
 
   return (
-    <Sidebar className="border-r" collapsible="icon">
+    <Sidebar className="border-r border-white/10 bg-black/30 backdrop-blur-lg" collapsible="icon">
       <SidebarHeader>
         <Link
           href="/dashboard"

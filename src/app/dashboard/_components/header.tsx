@@ -15,7 +15,7 @@ import { SidebarTrigger } from '@/components/ui/sidebar';
 
 export function AppHeader() {
   return (
-    <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center gap-4 border-b bg-background/80 px-4 backdrop-blur-sm md:px-6">
+    <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center gap-4 border-b border-white/10 bg-black/30 px-4 backdrop-blur-lg md:px-6">
       <div className="md:hidden">
         <SidebarTrigger />
       </div>
@@ -32,7 +32,7 @@ export function AppHeader() {
               </Avatar>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
+          <DropdownMenuContent align="end" className="w-56 glassmorphic">
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-1">
                 <p className="text-sm font-medium leading-none">Usuário Teste</p>

@@ -70,7 +70,7 @@ export default function OfertaPage({ params }: { params: { id: string } }) {
         </Link>
         
         <div className="flex flex-col gap-8">
-            <Card className="rounded-2xl bg-card/60 shadow-lg backdrop-blur-sm border-0">
+            <Card className="rounded-2xl glassmorphic border-0">
                 <CardHeader>
                     <div className="flex flex-wrap items-center gap-4 mb-4">
                         <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground flex-1">{oferta.title}</h1>
@@ -80,7 +80,7 @@ export default function OfertaPage({ params }: { params: { id: string } }) {
                     </div>
                     <div className="flex flex-wrap gap-2">
                         <Badge variant="secondary" className="text-sm">{oferta.type}</Badge>
-                        <Badge variant="outline" className="border-secondary/50 text-secondary text-sm">{oferta.format}</Badge>
+                        <Badge variant="outline" className="border-primary/50 text-primary text-sm">{oferta.format}</Badge>
                     </div>
                 </CardHeader>
                 <CardContent>
@@ -106,7 +106,7 @@ export default function OfertaPage({ params }: { params: { id: string } }) {
                 </CardContent>
             </Card>
 
-            <Card className="rounded-2xl bg-card/60 shadow-lg backdrop-blur-sm border-0">
+            <Card className="rounded-2xl glassmorphic border-0">
                 <CardHeader>
                     <CardTitle>Ações Rápidas</CardTitle>
                 </CardHeader>
