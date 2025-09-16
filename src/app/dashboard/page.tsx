@@ -11,9 +11,11 @@ import {
 import { Input } from '@/components/ui/input';
 import { Copy, ShieldCheck, Upload, TrendingUp, BarChart2 } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const ofertasEscaladas = [
   {
+    id: '1',
     title: 'Método de 7 Segundos',
     type: 'Infoproduto',
     format: 'VSL',
@@ -23,8 +25,10 @@ const ofertasEscaladas = [
     status: 'escalando',
     imageUrl: 'https://picsum.photos/seed/oferta-1/600/400',
     imageHint: 'abstract technology',
+    descricao: 'Descubra o método que está revolucionando o mercado digital. Uma estratégia de vendas rápida e eficaz para alavancar seus resultados em tempo recorde.'
   },
   {
+    id: '2',
     title: 'Bactéria Gordurosa',
     type: 'Encapsulado',
     format: 'Landing Page',
@@ -34,8 +38,10 @@ const ofertasEscaladas = [
     status: 'escalando',
     imageUrl: 'https://picsum.photos/seed/oferta-2/600/400',
     imageHint: 'health science',
+    descricao: 'A fórmula inovadora que atua diretamente na queima de gordura localizada. Um produto com alta conversão e ticket elevado, ideal para escalar suas campanhas.'
   },
   {
+    id: '3',
     title: '100 Receitas Ricas em Proteínas',
     type: 'Infoproduto',
     format: 'Quiz',
@@ -45,6 +51,7 @@ const ofertasEscaladas = [
     status: 'risco',
     imageUrl: 'https://picsum.photos/seed/oferta-3/600/400',
     imageHint: 'healthy food',
+    descricao: 'Um e-book completo com 100 receitas para quem busca uma alimentação saudável e rica em proteínas. Perfeito para nichos de fitness e bem-estar.'
   },
 ];
 
@@ -67,50 +74,51 @@ export default function DashboardPage() {
             </h2>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {ofertasEscaladas.map((oferta) => (
-                    <Card
-                        key={oferta.title}
-                        className={`flex flex-col rounded-2xl bg-card/60 shadow-lg backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] hover:shadow-primary/20 border-2 overflow-hidden ${
-                            oferta.status === 'escalando' ? 'border-green-500' : 'border-red-500'
-                        }`}
-                    >
-                        <div className="relative w-full aspect-video">
-                            <Image
-                                src={oferta.imageUrl}
-                                alt={`Capa da oferta ${oferta.title}`}
-                                fill
-                                className="object-cover"
-                                data-ai-hint={oferta.imageHint}
-                            />
-                        </div>
-                        <CardHeader className="pb-4">
-                            <CardTitle className="text-xl font-bold text-foreground">{oferta.title}</CardTitle>
-                        </CardHeader>
-                        <CardContent className="flex-grow space-y-4">
-                            <div className="flex flex-wrap gap-2">
-                                <Badge variant="default" className="bg-primary hover:bg-primary/80">{oferta.type}</Badge>
-                                <Badge variant="secondary" className="bg-secondary hover:bg-secondary/80">{oferta.format}</Badge>
+                    <Link href={`/dashboard/ofertas/${oferta.id}`} key={oferta.id} className="cursor-pointer">
+                        <Card
+                            className={`flex flex-col h-full rounded-2xl bg-card/60 shadow-lg backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] hover:shadow-primary/20 border-2 overflow-hidden ${
+                                oferta.status === 'escalando' ? 'border-green-500' : 'border-red-500'
+                            }`}
+                        >
+                            <div className="relative w-full aspect-video">
+                                <Image
+                                    src={oferta.imageUrl}
+                                    alt={`Capa da oferta ${oferta.title}`}
+                                    fill
+                                    className="object-cover"
+                                    data-ai-hint={oferta.imageHint}
+                                />
                             </div>
-                            <div className="space-y-2 text-sm text-muted-foreground">
-                                <div className="flex items-center justify-between">
-                                    <span className="flex items-center gap-2"><BarChart2 className="h-4 w-4" /> Anúncios Ativos:</span>
-                                    <span className="font-bold text-foreground">{oferta.ads}</span>
+                            <CardHeader className="pb-4">
+                                <CardTitle className="text-xl font-bold text-foreground">{oferta.title}</CardTitle>
+                            </CardHeader>
+                            <CardContent className="flex-grow space-y-4">
+                                <div className="flex flex-wrap gap-2">
+                                    <Badge variant="default" className="bg-primary hover:bg-primary/80">{oferta.type}</Badge>
+                                    <Badge variant="secondary" className="bg-secondary hover:bg-secondary/80">{oferta.format}</Badge>
                                 </div>
-                                <div className="flex items-center justify-between">
-                                    <span className="flex items-center gap-2"><TrendingUp className="h-4 w-4" /> ROAS:</span>
-                                    <span className="font-bold text-foreground">{oferta.roas}x</span>
+                                <div className="space-y-2 text-sm text-muted-foreground">
+                                    <div className="flex items-center justify-between">
+                                        <span className="flex items-center gap-2"><BarChart2 className="h-4 w-4" /> Anúncios Ativos:</span>
+                                        <span className="font-bold text-foreground">{oferta.ads}</span>
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                        <span className="flex items-center gap-2"><TrendingUp className="h-4 w-4" /> ROAS:</span>
+                                        <span className="font-bold text-foreground">{oferta.roas}x</span>
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                        <span>Ticket Médio:</span>
+                                        <span className="font-bold text-foreground">R${oferta.ticket}</span>
+                                    </div>
                                 </div>
-                                <div className="flex items-center justify-between">
-                                    <span>Ticket Médio:</span>
-                                    <span className="font-bold text-foreground">R${oferta.ticket}</span>
+                            </CardContent>
+                            <CardFooter>
+                                 <div className={`w-full text-center text-xs font-bold ${oferta.status === 'escalando' ? 'text-green-500' : 'text-red-500'}`}>
+                                    {oferta.status === 'escalando' ? 'Escalando' : 'Em Risco'}
                                 </div>
-                            </div>
-                        </CardContent>
-                        <CardFooter>
-                             <div className={`w-full text-center text-xs font-bold ${oferta.status === 'escalando' ? 'text-green-500' : 'text-red-500'}`}>
-                                {oferta.status === 'escalando' ? 'Escalando' : 'Em Risco'}
-                            </div>
-                        </CardFooter>
-                    </Card>
+                            </CardFooter>
+                        </Card>
+                    </Link>
                 ))}
             </div>
         </div>
