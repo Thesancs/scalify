@@ -10,7 +10,7 @@
     --card-foreground: 220 14% 96%;
     --popover: 0 0% 8%;
     --popover-foreground: 220 14% 96%;
-    --primary: 45 100% 50%; /* Neon Gold */
+    --primary: 48 98% 50%; /* Neon Gold */
     --primary-foreground: 0 0% 10%;
     --secondary: 265 100% 70%; /* Neon Purple */
     --secondary-foreground: 220 14% 98%;
@@ -45,7 +45,7 @@
     --card-foreground: 220 14% 96%;
     --popover: 0 0% 8%;
     --popover-foreground: 220 14% 96%;
-    --primary: 45 100% 50%; /* Neon Gold */
+    --primary: 48 98% 50%; /* Neon Gold */
     --primary-foreground: 0 0% 10%;
     --secondary: 265 100% 70%; /* Neon Purple */
     --secondary-foreground: 220 14% 98%;
@@ -80,5 +80,6 @@
   }
   body {
     @apply bg-background text-foreground;
+    background-image: linear-gradient(to bottom, hsl(var(--background)), hsl(265, 70%, 8%));
   }
 }
