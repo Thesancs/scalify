@@ -34,7 +34,7 @@ export function AppSidebar() {
   const pathname = usePathname();
 
   return (
-    <Sidebar className="border-r border-white/10 bg-black/30 backdrop-blur-lg" collapsible="icon">
+    <Sidebar className="border-r border-white/10 bg-black/60 backdrop-blur-md" collapsible="icon">
       <SidebarHeader>
         <Link
           href="/dashboard"
@@ -69,13 +69,13 @@ export function AppSidebar() {
                   <SidebarMenuButton
                     asChild
                     size="lg"
-                    className="text-base"
+                    className="group h-auto gap-3 py-3 px-2 text-base transition-all duration-300 hover:bg-white/10"
                     isActive={pathname.startsWith(item.href) && (item.href !== '/dashboard' || pathname === '/dashboard')}
                     tooltip={item.label}
                   >
                     <a>
-                      <item.icon />
-                      <span>{item.label}</span>
+                      <item.icon className="h-6 w-6 group-data-[active=true]:text-primary" />
+                      <span className="group-data-[active=true]:text-primary">{item.label}</span>
                     </a>
                   </SidebarMenuButton>
                 </Link>
