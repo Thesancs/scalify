@@ -76,7 +76,7 @@ export default function DashboardPage() {
                 {ofertasEscaladas.map((oferta) => (
                     <Link href={`/dashboard/ofertas/${oferta.id}`} key={oferta.id} className="cursor-pointer">
                         <Card
-                            className={`flex flex-col h-full rounded-2xl bg-card/60 shadow-lg backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] hover:shadow-primary/20 border-2 overflow-hidden ${
+                            className={`flex flex-col h-full rounded-2xl bg-card/60 shadow-lg backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] hover:shadow-secondary/20 border-2 overflow-hidden ${
                                 oferta.status === 'escalando' ? 'border-green-500' : 'border-red-500'
                             }`}
                         >
@@ -94,8 +94,8 @@ export default function DashboardPage() {
                             </CardHeader>
                             <CardContent className="flex-grow space-y-4">
                                 <div className="flex flex-wrap gap-2">
-                                    <Badge variant="default" className="bg-primary hover:bg-primary/80">{oferta.type}</Badge>
-                                    <Badge variant="secondary" className="bg-secondary hover:bg-secondary/80">{oferta.format}</Badge>
+                                    <Badge variant="secondary">{oferta.type}</Badge>
+                                    <Badge variant="outline" className="border-secondary/50 text-secondary">{oferta.format}</Badge>
                                 </div>
                                 <div className="space-y-2 text-sm text-muted-foreground">
                                     <div className="flex items-center justify-between">

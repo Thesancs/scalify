@@ -79,8 +79,8 @@ export default function OfertaPage({ params }: { params: { id: string } }) {
                         </div>
                     </div>
                     <div className="flex flex-wrap gap-2">
-                        <Badge variant="default" className="bg-primary hover:bg-primary/80 text-sm">{oferta.type}</Badge>
-                        <Badge variant="secondary" className="bg-secondary hover:bg-secondary/80 text-sm">{oferta.format}</Badge>
+                        <Badge variant="secondary" className="text-sm">{oferta.type}</Badge>
+                        <Badge variant="outline" className="border-secondary/50 text-secondary text-sm">{oferta.format}</Badge>
                     </div>
                 </CardHeader>
                 <CardContent>
@@ -115,13 +115,13 @@ export default function OfertaPage({ params }: { params: { id: string } }) {
                         <CheckCircle className="mr-2 h-6 w-6" />
                         Salvar Oferta
                     </Button>
-                    <Button size="lg" variant="secondary" className="h-16 text-lg" asChild>
+                    <Button size="lg" className="h-16 text-lg" asChild>
                         <a href="https://checkout.scalify.dev/mock" target="_blank" rel="noopener noreferrer">
                             <ExternalLink className="mr-2 h-6 w-6" />
                             Ir para Checkout
                         </a>
                     </Button>
-                     <Button size="lg" variant="outline" className="h-16 text-lg" asChild>
+                     <Button size="lg" className="h-16 text-lg" asChild>
                         <Link href={`/anuncios/${oferta.id}`}>
                            <Library className="mr-2 h-6 w-6" />
                            Ver Anúncios
