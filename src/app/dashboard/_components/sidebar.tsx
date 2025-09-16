@@ -34,7 +34,7 @@ export function AppSidebar() {
   const pathname = usePathname();
 
   return (
-    <Sidebar className="border-r border-white/10 bg-black/60 backdrop-blur-md" collapsible="icon">
+    <Sidebar className="border-r border-white/10 bg-black/40 backdrop-blur-xl" collapsible="icon">
       <SidebarHeader>
         <Link
           href="/dashboard"
@@ -63,13 +63,13 @@ export function AppSidebar() {
         <SidebarMenu>
           {menuItems.map((item, index) => (
             <React.Fragment key={item.label}>
-              {index === 3 && <SidebarSeparator className="my-2" />}
+              {index === 3 && <SidebarSeparator className="my-2 border-b border-white/10" />}
               <SidebarMenuItem>
                 <Link href={item.href} legacyBehavior passHref>
                   <SidebarMenuButton
                     asChild
                     size="lg"
-                    className="group h-auto gap-3 py-3 px-2 text-base transition-all duration-300 hover:bg-white/10"
+                    className="group h-auto gap-3 py-3 px-4 text-base transition-all duration-300 hover:bg-white/10 data-[active=true]:bg-white/15 data-[active=true]:text-primary"
                     isActive={pathname.startsWith(item.href) && (item.href !== '/dashboard' || pathname === '/dashboard')}
                     tooltip={item.label}
                   >
