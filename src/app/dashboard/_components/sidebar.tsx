@@ -65,20 +65,18 @@ export function AppSidebar() {
             <React.Fragment key={item.label}>
               {index === 3 && <SidebarSeparator className="my-2 border-b border-white/10" />}
               <SidebarMenuItem>
-                <Link href={item.href} legacyBehavior passHref>
-                  <SidebarMenuButton
-                    asChild
-                    size="lg"
-                    className="group h-auto gap-3 py-3 px-4 text-base transition-all duration-300 hover:bg-white/10 data-[active=true]:bg-white/15 data-[active=true]:text-primary"
-                    isActive={pathname.startsWith(item.href) && (item.href !== '/dashboard' || pathname === '/dashboard')}
-                    tooltip={item.label}
-                  >
-                    <a>
-                      <item.icon className="h-6 w-6 group-data-[active=true]:text-primary" />
-                      <span className="group-data-[active=true]:text-primary">{item.label}</span>
-                    </a>
-                  </SidebarMenuButton>
-                </Link>
+                <SidebarMenuButton
+                  asChild
+                  size="lg"
+                  className="group h-auto gap-3 py-3 px-4 text-base transition-all duration-300 hover:bg-white/10 data-[active=true]:bg-white/15 data-[active=true]:text-primary"
+                  isActive={pathname.startsWith(item.href) && (item.href !== '/dashboard' || pathname === '/dashboard')}
+                  tooltip={item.label}
+                >
+                  <Link href={item.href}>
+                    <item.icon className="h-6 w-6 group-data-[active=true]:text-primary" />
+                    <span className="group-data-[active=true]:text-primary">{item.label}</span>
+                  </Link>
+                </SidebarMenuButton>
               </SidebarMenuItem>
             </React.Fragment>
           ))}
