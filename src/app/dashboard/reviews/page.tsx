@@ -8,38 +8,38 @@ import { useToast } from '@/hooks/use-toast';
 import { generateWhatsappImage } from '@/ai/flows/whatsapp-image-generator';
 import WhatsAppLivePreview, {
   type ChatMessage,
-  type StatusBarOptions,
-  type ChatHeaderOptions,
 } from '@/components/reviews/WhatsAppLivePreview';
 import ConversationDesigner, {
   type ConversationDesignerState,
 } from '@/components/reviews/ConversationDesigner';
 
+const initialState: ConversationDesignerState = {
+  autoAlternate: true,
+  nextSender: 'client',
+  defaultTime: '08:42',
+  messages: [
+    { id: '1', sender: 'client', kind: 'text', text: 'Olá, recebi meu produto!', time: '14:20' },
+    { id: '2', sender: 'me', kind: 'text', text: 'Que ótimo! O que achou?', time: '14:21' },
+  ],
+  options: {
+    interfaceStyle: 'iphone',
+    phoneTime: '10:04',
+    icons: {
+      networkLabel: '4G',
+      batteryPercent: 80,
+      signalBars: 4,
+      wifi: true,
+    },
+  },
+  header: {
+    name: 'Cliente Satisfeito',
+    status: 'online',
+  },
+};
+
 export default function ReviewsPage() {
   const { toast } = useToast();
-  const [designerState, setDesignerState] = useState<ConversationDesignerState>({
-    autoAlternate: true,
-    nextSender: 'client',
-    defaultTime: '08:42',
-    messages: [
-      { id: '1', sender: 'client', kind: 'text', text: 'Olá, recebi meu produto!', time: '14:20' },
-      { id: '2', sender: 'me', kind: 'text', text: 'Que ótimo! O que achou?', time: '14:21' },
-    ],
-    options: {
-      interfaceStyle: 'iphone',
-      phoneTime: '10:04',
-      icons: {
-        networkLabel: '4G',
-        batteryPercent: 80,
-        signalBars: 4,
-        wifi: true,
-      },
-    },
-    header: {
-      name: 'Cliente Satisfeito',
-      status: 'online',
-    },
-  });
+  const [designerState, setDesignerState] = useState<ConversationDesignerState>(initialState);
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
