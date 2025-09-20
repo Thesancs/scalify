@@ -68,66 +68,7 @@ export default function DashboardPage() {
         </p>
       </div>
 
-      <div className="flex flex-col gap-8">
-        <div>
-            <h2 className="text-2xl font-bold tracking-tight text-foreground mb-4">
-                Ofertas Escaladas
-            </h2>
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {ofertasEscaladas.map((oferta) => (
-                    <Link href={`/dashboard/ofertas/${oferta.id}`} key={oferta.id} className="cursor-pointer">
-                        <Card
-                            className={`flex flex-col h-full rounded-2xl glassmorphic transition-all duration-300 hover:scale-[1.02] hover:border-primary overflow-hidden`}
-                        >
-                            <div className="relative w-full aspect-video">
-                                <Image
-                                    src={oferta.imageUrl}
-                                    alt={`Capa da oferta ${oferta.title}`}
-                                    fill
-                                    className="object-cover"
-                                    data-ai-hint={oferta.imageHint}
-                                />
-                            </div>
-                            <CardHeader className="pb-4">
-                                <CardTitle className="text-xl font-bold text-foreground">{oferta.title}</CardTitle>
-                            </CardHeader>
-                            <CardContent className="flex-grow space-y-4">
-                                <div className="flex flex-wrap gap-2">
-                                    <Badge variant="secondary">{oferta.type}</Badge>
-                                    <Badge variant="outline" className="border-primary/50 text-primary">{oferta.format}</Badge>
-                                </div>
-                                <div className="space-y-2 text-sm text-muted-foreground">
-                                    <div className="flex items-center justify-between">
-                                        <span className="flex items-center gap-2"><BarChart2 className="h-4 w-4" /> Anúncios Ativos:</span>
-                                        <span className="font-bold text-foreground">{oferta.ads}</span>
-                                    </div>
-                                    <div className="flex items-center justify-between">
-                                        <span className="flex items-center gap-2"><TrendingUp className="h-4 w-4" /> ROAS:</span>
-                                        <span className="font-bold text-foreground">{oferta.roas}x</span>
-                                    </div>
-                                    <div className="flex items-center justify-between">
-                                        <span>Ticket Médio:</span>
-                                        <span className="font-bold text-foreground">R${oferta.ticket}</span>
-                                    </div>
-                                </div>
-                            </CardContent>
-                            <CardFooter>
-                                 <Badge
-                                    variant={oferta.status === 'escalando' ? 'default' : 'destructive'}
-                                    className={`w-full justify-center ${oferta.status === 'escalando' ? 'bg-green-500/20 text-green-400 border-green-500/30' : 'bg-red-500/20 text-red-400 border-red-500/30'}`}
-                                >
-                                    {oferta.status === 'escalando' ? 'Escalando' : 'Em Risco'}
-                                </Badge>
-                            </CardFooter>
-                        </Card>
-                    </Link>
-                ))}
-            </div>
-        </div>
-      </div>
-
-
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {/* Card Anticlone */}
         <Card className="flex flex-col rounded-2xl glassmorphic transition-all duration-300 hover:scale-[1.02] hover:border-primary">
           <CardHeader>
@@ -190,6 +131,68 @@ export default function DashboardPage() {
             </Button>
           </CardFooter>
         </Card>
+      </div>
+
+
+      <div className="flex flex-col gap-8">
+        <div>
+            <h2 className="text-2xl font-bold tracking-tight text-foreground mb-2">
+                Ofertas Escaladas
+            </h2>
+            <p className="text-muted-foreground mb-4">
+                Analise ofertas com alto potencial de escala validadas por nossa equipe. O score indica a relação risco/retorno.
+            </p>
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {ofertasEscaladas.map((oferta) => (
+                    <Link href={`/dashboard/ofertas/${oferta.id}`} key={oferta.id} className="cursor-pointer">
+                        <Card
+                            className={`flex flex-col h-full rounded-2xl glassmorphic transition-all duration-300 hover:scale-[1.02] hover:border-primary overflow-hidden`}
+                        >
+                            <div className="relative w-full aspect-video">
+                                <Image
+                                    src={oferta.imageUrl}
+                                    alt={`Capa da oferta ${oferta.title}`}
+                                    fill
+                                    className="object-cover"
+                                    data-ai-hint={oferta.imageHint}
+                                />
+                            </div>
+                            <CardHeader className="pb-4">
+                                <CardTitle className="text-xl font-bold text-foreground">{oferta.title}</CardTitle>
+                            </CardHeader>
+                            <CardContent className="flex-grow space-y-4">
+                                <div className="flex flex-wrap gap-2">
+                                    <Badge variant="secondary">{oferta.type}</Badge>
+                                    <Badge variant="outline" className="border-primary/50 text-primary">{oferta.format}</Badge>
+                                </div>
+                                <div className="space-y-2 text-sm text-muted-foreground">
+                                    <div className="flex items-center justify-between">
+                                        <span className="flex items-center gap-2"><BarChart2 className="h-4 w-4" /> Anúncios Ativos:</span>
+                                        <span className="font-bold text-foreground">{oferta.ads}</span>
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                        <span className="flex items-center gap-2"><TrendingUp className="h-4 w-4" /> ROAS:</span>
+                                        <span className="font-bold text-foreground">{oferta.roas}x</span>
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                        <span>Ticket Médio:</span>
+                                        <span className="font-bold text-foreground">R${oferta.ticket}</span>
+                                    </div>
+                                </div>
+                            </CardContent>
+                            <CardFooter>
+                                 <Badge
+                                    variant={oferta.status === 'escalando' ? 'default' : 'destructive'}
+                                    className={`w-full justify-center ${oferta.status === 'escalando' ? 'bg-green-500/20 text-green-400 border-green-500/30' : 'bg-red-500/20 text-red-400 border-red-500/30'}`}
+                                >
+                                    {oferta.status === 'escalando' ? 'Escalando' : 'Em Risco'}
+                                </Badge>
+                            </CardFooter>
+                        </Card>
+                    </Link>
+                ))}
+            </div>
+        </div>
       </div>
     </div>
   );

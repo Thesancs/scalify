@@ -3,7 +3,7 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, BarChart2, CheckCircle, ExternalLink, Library, TrendingUp } from 'lucide-react';
+import { ArrowLeft, BarChart2, CheckCircle, ExternalLink, Library, PlusCircle, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
@@ -115,11 +115,11 @@ export default function OfertaPage({ params }: { params: { id: string } }) {
                         <CheckCircle className="mr-2 h-6 w-6" />
                         Salvar Oferta
                     </Button>
-                    <Button size="lg" className="h-16 text-lg" asChild>
-                        <a href="https://checkout.scalify.dev/mock" target="_blank" rel="noopener noreferrer">
-                            <ExternalLink className="mr-2 h-6 w-6" />
-                            Ir para Checkout
-                        </a>
+                    <Button size="lg" className="h-16 text-lg" variant="outline" asChild>
+                        <Link href={`/dashboard/watchlist?add=${oferta.id}`}>
+                           <PlusCircle className="mr-2 h-6 w-6" />
+                           Adicionar à Watchlist
+                        </Link>
                     </Button>
                      <Button size="lg" className="h-16 text-lg" asChild>
                         <Link href={`/anuncios/${oferta.id}`}>
