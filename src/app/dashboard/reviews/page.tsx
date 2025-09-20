@@ -7,19 +7,32 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ImageIcon, Loader2, Sparkles, User } from 'lucide-react';
+import { ImageIcon, Loader2, Sparkles, User, Settings, PlusCircle, Trash2, ArrowUp, ArrowDown } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 import Image from 'next/image';
 import { generateWhatsappImage } from '@/ai/flows/whatsapp-image-generator';
 import { useToast } from '@/hooks/use-toast';
+import { Separator } from '@/components/ui/separator';
+
+type Message = {
+  id: number;
+  sender: 'Eu' | 'Contato';
+  text: string;
+  status: 'enviado' | 'entregue' | 'lido';
+  time: string;
+};
 
 export default function ReviewsPage() {
   const { toast } = useToast();
-  const [name, setName] = useState('');
-  const [script, setScript] = useState('');
+  const [contactName, setContactName] = useState('Cliente Satisfeito');
   const [profilePic, setProfilePic] = useState<string | null>(null);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  
+  const [messages, setMessages] = useState<Message[]>([
+    { id: 1, sender: 'Contato', text: 'Olá, recebi meu produto!', status: 'lido', time: '14:20' },
+    { id: 2, sender: 'Eu', text: 'Que ótimo! O que achou?', status: 'lido', time: '14:21' },
+  ]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -32,12 +45,17 @@ export default function ReviewsPage() {
     }
   };
 
+  const getChatScript = () => {
+    return messages.map(msg => `${msg.sender === 'Eu' ? 'Eu' : contactName}: ${msg.text}`).join('\n');
+  }
+
   const handleGenerate = async () => {
-    if (!name || !script) {
+    const script = getChatScript();
+    if (!contactName || !script) {
       toast({
         variant: 'destructive',
         title: 'Campos obrigatórios',
-        description: 'Por favor, preencha o nome e o roteiro da conversa.',
+        description: 'Por favor, preencha o nome do contato e adicione pelo menos uma mensagem.',
       });
       return;
     }
@@ -45,7 +63,7 @@ export default function ReviewsPage() {
     setGeneratedImage(null);
     try {
       const result = await generateWhatsappImage({
-        contactName: name,
+        contactName: contactName,
         chatScript: script,
         profilePictureDataUri: profilePic,
       });
@@ -62,92 +80,141 @@ export default function ReviewsPage() {
       setIsLoading(false);
     }
   };
+  
+  const addMessage = () => {
+    const lastSender = messages.length > 0 ? messages[messages.length - 1].sender : 'Contato';
+    const newSender = lastSender === 'Eu' ? 'Contato' : 'Eu';
+    const newId = messages.length > 0 ? Math.max(...messages.map(m => m.id)) + 1 : 1;
+    setMessages([...messages, { id: newId, sender: newSender, text: '', status: 'lido', time: '14:22' }]);
+  }
+
+  const updateMessage = (id: number, newText: string) => {
+    setMessages(messages.map(msg => msg.id === id ? { ...msg, text: newText } : msg));
+  }
+  
+  const deleteMessage = (id: number) => {
+    setMessages(messages.filter(msg => msg.id !== id));
+  }
 
   const WhatsAppGenerator = () => (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-6">
       <Card className="glassmorphic">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Sparkles className="text-primary h-6 w-6" />
-            Configurações da Conversa
+            <Settings className="text-primary h-6 w-6" />
+            Editor da Conversa
           </CardTitle>
           <CardDescription>
-            Preencha os detalhes para gerar a imagem da sua conversa de WhatsApp.
+            Crie a conversa balão a balão e personalize os detalhes.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="contact-name">Nome do Contato</Label>
-            <Input
-              id="contact-name"
-              placeholder="Ex: Cliente Satisfeito"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="profile-pic">Foto de Perfil (Opcional)</Label>
-            <div className="flex items-center gap-4">
-              <Avatar className="h-16 w-16">
-                <AvatarImage src={profilePic ?? undefined} />
-                <AvatarFallback>
-                  <User className="h-8 w-8" />
-                </AvatarFallback>
-              </Avatar>
-              <Input id="profile-pic" type="file" accept="image/*" onChange={handleFileChange} className="max-w-xs" />
+          <div className="space-y-4 p-4 border border-white/10 rounded-lg">
+            <h3 className="font-semibold">Configurações do Topo</h3>
+            <div className="space-y-2">
+                <Label htmlFor="contact-name">Nome do Contato</Label>
+                <Input
+                id="contact-name"
+                placeholder="Ex: Cliente Satisfeito"
+                value={contactName}
+                onChange={(e) => setContactName(e.target.value)}
+                />
+            </div>
+            <div className="space-y-2">
+                <Label htmlFor="profile-pic">Foto de Perfil (Opcional)</Label>
+                <div className="flex items-center gap-4">
+                <Avatar className="h-16 w-16">
+                    <AvatarImage src={profilePic ?? undefined} />
+                    <AvatarFallback>
+                    <User className="h-8 w-8" />
+                    </AvatarFallback>
+                </Avatar>
+                <Input id="profile-pic" type="file" accept="image/*" onChange={handleFileChange} className="max-w-xs" />
+                </div>
             </div>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="script">Roteiro da Conversa</Label>
-            <Textarea
-              id="script"
-              placeholder="Ex:
-Cliente Satisfeito: Olá, recebi meu produto!
-Eu: Que ótimo! O que achou?"
-              value={script}
-              onChange={(e) => setScript(e.target.value)}
-              className="h-48"
-            />
-             <p className="text-xs text-muted-foreground">Use "Eu:" para suas mensagens e o nome do contato para as mensagens dele.</p>
+
+          <Separator className="bg-white/10" />
+
+          <div className="space-y-4">
+             <h3 className="font-semibold">Roteiro da Conversa</h3>
+            {messages.map((message, index) => (
+              <div key={message.id} className="p-3 border border-white/10 rounded-lg space-y-2">
+                 <div className="flex justify-between items-center">
+                    <Label>{message.sender === 'Eu' ? 'Eu (balão verde)' : `${contactName} (balão cinza)`}</Label>
+                    <div className="flex items-center gap-2">
+                        <Button variant="ghost" size="icon" className="h-7 w-7" disabled={index === 0}>
+                            <ArrowUp className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="icon" className="h-7 w-7" disabled={index === messages.length - 1}>
+                            <ArrowDown className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="icon" className="h-7 w-7 text-red-400 hover:text-red-500" onClick={() => deleteMessage(message.id)}>
+                            <Trash2 className="h-4 w-4" />
+                        </Button>
+                    </div>
+                 </div>
+                <Textarea
+                  placeholder={`Mensagem de ${message.sender}...`}
+                  value={message.text}
+                  onChange={(e) => updateMessage(message.id, e.target.value)}
+                  className="h-20"
+                />
+              </div>
+            ))}
+             <Button onClick={addMessage} variant="outline" className="w-full">
+                <PlusCircle className="mr-2 h-4 w-4" />
+                Adicionar Mensagem
+             </Button>
           </div>
-          <Button onClick={handleGenerate} disabled={isLoading} size="lg" className="w-full">
+          
+          <Separator className="bg-white/10" />
+
+          <Button onClick={handleGenerate} disabled={isLoading} size="lg" className="w-full text-lg h-14">
             {isLoading ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                 Gerando Imagem...
               </>
             ) : (
-              'Gerar Imagem'
+               <>
+                <Sparkles className="mr-2 h-5 w-5" />
+                Gerar Imagem da Conversa
+               </>
             )}
           </Button>
         </CardContent>
       </Card>
       <Card className="glassmorphic flex items-center justify-center">
-        <CardContent className="p-6 w-full h-full">
-          {isLoading && (
-            <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
-              <Loader2 className="h-16 w-16 animate-spin text-primary mb-4" />
-              <p>Aguarde, a IA está criando sua imagem...</p>
-            </div>
-          )}
-          {generatedImage && (
-            <div className="w-full h-full relative">
-              <Image 
-                src={generatedImage} 
-                alt="Conversa gerada" 
-                fill
-                className="object-contain rounded-md"
-              />
-            </div>
-          )}
-          {!isLoading && !generatedImage && (
-            <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
-              <ImageIcon className="h-16 w-16 mb-4" />
-              <h3 className="font-bold text-lg">Sua imagem aparecerá aqui</h3>
-              <p>Preencha os dados e clique em "Gerar Imagem" para começar.</p>
-            </div>
-          )}
-        </CardContent>
+        <CardHeader className="w-full h-full">
+            <CardTitle>Preview</CardTitle>
+            <CardContent className="p-0 w-full h-full pt-4">
+            {isLoading && (
+                <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
+                <Loader2 className="h-16 w-16 animate-spin text-primary mb-4" />
+                <p>Aguarde, a IA está criando sua imagem...</p>
+                <p className="text-xs mt-2">Isso pode levar alguns segundos.</p>
+                </div>
+            )}
+            {generatedImage && (
+                <div className="w-full h-full relative">
+                <Image 
+                    src={generatedImage} 
+                    alt="Conversa gerada" 
+                    fill
+                    className="object-contain rounded-md"
+                />
+                </div>
+            )}
+            {!isLoading && !generatedImage && (
+                <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground border-2 border-dashed border-white/10 rounded-lg">
+                <ImageIcon className="h-16 w-16 mb-4" />
+                <h3 className="font-bold text-lg">Sua imagem aparecerá aqui</h3>
+                <p>Preencha os dados e clique em "Gerar Imagem" para começar.</p>
+                </div>
+            )}
+            </CardContent>
+        </CardHeader>
       </Card>
     </div>
   );
