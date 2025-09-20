@@ -16,13 +16,11 @@ import {
   Paperclip,
   Camera,
   Mic,
-  Plus,
   Smile,
-  Triangle,
-  Circle as CircleIcon,
-  Square,
   Play,
-  Volume2,
+  BatteryCharging,
+  LocateIcon,
+  Plane,
 } from 'lucide-react';
 
 export type MessageKind = 'text' | 'image' | 'audio';
@@ -48,7 +46,7 @@ export type StatusBarOptions = {
     networkLabel?: '3G' | '4G' | '5G' | 'LTE' | '';
     batteryPercent?: number;
     charging?: boolean;
-    signalBars?: 0 | 1 | 2 | 3 | 4 | 5;
+    signalBars?: 0 | 1 | 2 | 3 | 4;
     wifi?: boolean;
     airplane?: boolean;
   };
@@ -67,12 +65,33 @@ export type WhatsAppLivePreviewProps = {
   messages: ChatMessage[];
   loading?: boolean;
   error?: string | null;
+  generatedImage?: string | null;
   className?: string;
   hideBottom?: boolean;
 };
 
 const DEFAULT_TIME = '08:42';
 const DEFAULT_PHONE_TIME = '10:04';
+
+const SignalBars = ({ bars = 4 }: { bars: number }) => {
+  return (
+    <div className="flex items-end gap-0.5">
+      {Array.from({ length: 4 }).map((_, i) => (
+        <div
+          key={i}
+          className={cn('w-1 rounded-[1px] bg-white/90',
+            i === 0 ? 'h-1.5' : '',
+            i === 1 ? 'h-2' : '',
+            i === 2 ? 'h-2.5' : '',
+            i === 3 ? 'h-3' : '',
+            i >= bars && 'opacity-30'
+          )}
+        />
+      ))}
+    </div>
+  );
+};
+
 
 const StatusBar = ({ options }: { options: StatusBarOptions }) => {
   const { interfaceStyle = 'iphone', phoneTime = DEFAULT_PHONE_TIME, icons = {} } = options;
@@ -82,31 +101,51 @@ const StatusBar = ({ options }: { options: StatusBarOptions }) => {
     charging = false,
     signalBars = 4,
     wifi = true,
+    location = false,
+    airplane = false,
   } = icons;
+
+  if (options.hideTop) return null;
 
   if (interfaceStyle === 'android') {
     return (
       <div className="absolute top-0 left-0 right-0 h-8 px-4 flex items-center justify-end gap-2 text-white/90 bg-black/20 z-20">
-        {wifi && <Wifi size={16} />}
-        <span className="text-xs font-sans">{networkLabel}</span>
+        {airplane && <Plane size={16} />}
+        {!airplane && (
+          <>
+            {wifi && <Wifi size={16} />}
+            <SignalBars bars={signalBars} />
+            <span className="text-xs font-sans">{networkLabel}</span>
+          </>
+        )}
         <div className="flex items-center gap-0.5">
+          {charging ? <BatteryCharging size={20} /> : <BatteryFull size={20} />}
           <span className="text-xs font-sans">{batteryPercent}%</span>
-          {charging ? <BatteryFull size={20} className="relative"><path d="M6 7h8v10H6z" /><path d="m10 5-3 4h4l-3 4" /></BatteryFull> : <BatteryFull size={20} />}
         </div>
+        {location && <LocateIcon size={14} />}
       </div>
     );
   }
   // iPhone style
   return (
-    <div className="absolute top-0 left-0 right-0 h-10 px-6 flex items-center justify-between text-white/90 z-20">
+    <div className="absolute top-0 left-0 right-0 h-11 px-6 flex items-center justify-between text-white/90 z-20">
       <span className="text-sm font-semibold w-12 text-center">{phoneTime}</span>
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-black rounded-b-xl"></div>
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-8 bg-black rounded-b-lg"></div>
       <div className="flex items-center gap-1.5">
-        {wifi && <Wifi size={16} />}
-        <Signal size={16} />
-        <div className="flex items-center gap-0.5">
-            <span className="text-xs font-sans">{batteryPercent}%</span>
-            <BatteryFull size={24} className={cn(charging && 'text-green-400')} />
+        {airplane ? <Plane size={16} /> :
+          <>
+            {wifi && <Wifi size={16} />}
+            <SignalBars bars={signalBars} />
+          </>
+        }
+        <div className="flex items-center gap-1">
+            <span className="text-xs font-sans -mr-1">{batteryPercent}%</span>
+            <div className="relative w-6 h-3 border border-white/80 rounded-sm p-px">
+                <div 
+                    className={cn('h-full rounded-sm', charging ? 'bg-green-400' : 'bg-white/90')} 
+                    style={{ width: `${batteryPercent - 15}%`}}
+                />
+            </div>
         </div>
       </div>
     </div>
@@ -114,9 +153,13 @@ const StatusBar = ({ options }: { options: StatusBarOptions }) => {
 };
 
 
-const ChatHeader = ({ header }: { header: ChatHeaderOptions }) => {
+const ChatHeader = ({ header, options }: { header: ChatHeaderOptions, options: StatusBarOptions }) => {
     return (
-        <header className="absolute top-0 left-0 right-0 z-10 flex items-center p-3 pt-12 bg-[#075e54] text-white">
+        <header className={cn(
+            "absolute top-0 left-0 right-0 z-10 flex items-center p-2.5 bg-[#005E54] text-white",
+            options.hideTop ? 'pt-4' : 'pt-11'
+        )}>
+            {options.showBackArrow && <ArrowLeft size={24} className="mr-2" />}
             <Avatar className="h-10 w-10 mr-3 border-2 border-white/50">
                 <AvatarImage src={header.profileUrl ?? undefined} alt={header.name} data-ai-hint="person avatar" />
                 <AvatarFallback className="bg-gray-600 text-lg">
@@ -124,7 +167,10 @@ const ChatHeader = ({ header }: { header: ChatHeaderOptions }) => {
                 </AvatarFallback>
             </Avatar>
             <div className="flex-1">
-                <h2 className="font-semibold text-lg">{header.name}</h2>
+                <div className="flex items-center gap-2">
+                    <h2 className="font-semibold text-lg">{header.name}</h2>
+                    {header.unreadCount && <span className="bg-green-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">{header.unreadCount}</span>}
+                </div>
                 {header.status && <p className="text-sm text-white/80">{header.status}</p>}
             </div>
             <div className="flex items-center gap-5 text-white/90">
@@ -144,14 +190,14 @@ const ChatInput = ({ hidden, showKeyboard }: { hidden?: boolean, showKeyboard?: 
         )
     }
     return (
-        <div className="h-14 bg-[#075e54] flex items-center px-2 py-2 gap-2">
-            <div className="flex-1 bg-white rounded-full flex items-center px-4 gap-2">
-                <Smile className="text-gray-500" />
+        <div className="h-14 bg-[#111B21] flex items-center px-2 py-2 gap-2 flex-shrink-0">
+            <div className="flex-1 bg-[#202C33] rounded-lg flex items-center px-4 gap-3 h-full">
+                <Smile className="text-gray-400" />
                 <span className="text-gray-400 text-lg flex-1">Mensagem</span>
-                <Paperclip className="text-gray-500 -rotate-45" />
-                <Camera className="text-gray-500" />
+                <Paperclip className="text-gray-400 -rotate-45" />
+                <Camera className="text-gray-400" />
             </div>
-            <div className="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center">
+            <div className="w-12 h-12 bg-[#00A884] rounded-full flex items-center justify-center">
                 <Mic className="text-white" />
             </div>
         </div>
@@ -165,12 +211,15 @@ const WhatsAppLivePreview: React.FC<WhatsAppLivePreviewProps> = ({
   messages,
   loading = false,
   error = null,
+  generatedImage = null,
   className,
   hideBottom = false,
 }) => {
   const sanitizedMessages = useMemo(() => {
     return messages.filter((msg) => (msg.text && msg.text.trim().length > 0) || msg.imageUrl || msg.audioLabel);
   }, [messages]);
+
+  const { interfaceStyle = 'iphone' } = options;
 
   console.log('[WhatsAppLivePreview] v2', { 
       contactName: header.name, 
@@ -186,6 +235,14 @@ const WhatsAppLivePreview: React.FC<WhatsAppLivePreviewProps> = ({
           <p className="mt-4 text-sm">Gerando imagem...</p>
         </div>
       );
+    }
+    
+    if (generatedImage) {
+        return (
+             <div className="relative w-full h-full">
+                <img src={generatedImage} alt="Generated WhatsApp conversation" className="w-full h-full object-contain" />
+             </div>
+        )
     }
 
     if (error) {
@@ -211,7 +268,7 @@ const WhatsAppLivePreview: React.FC<WhatsAppLivePreviewProps> = ({
     return (
        <div 
         className="h-full w-full bg-contain"
-        style={{ backgroundImage: "url('/whatsapp-bg.png')"}}
+        style={{ backgroundImage: "url('/whatsapp-bg-dark.jpg')"}}
       >
         <div className="flex h-full flex-col justify-end p-4 space-y-2">
             <AnimatePresence initial={false}>
@@ -230,29 +287,29 @@ const WhatsAppLivePreview: React.FC<WhatsAppLivePreviewProps> = ({
                 >
                     <div
                     className={cn(
-                        'relative rounded-lg px-3 py-1.5 text-sm text-gray-800 shadow-md',
+                        'relative rounded-lg px-3 py-1.5 text-sm shadow-md',
                         message.sender === 'me'
-                        ? 'bg-[#d9fdd3] rounded-tr-none'
-                        : 'bg-white rounded-tl-none'
+                        ? 'bg-[#005C4B] text-white rounded-tr-none'
+                        : 'bg-[#202C33] text-white rounded-tl-none'
                     )}
                     >
                     
                     {message.kind === 'image' && message.imageUrl && (
-                        <img src={message.imageUrl} alt="chat image" className="rounded-md mb-1" data-ai-hint="user content" />
+                        <img src={message.imageUrl} alt="chat image" className="rounded-md mb-1 max-w-full h-auto" data-ai-hint="user content" />
                     )}
 
                     {message.kind === 'audio' && (
                         <div className="flex items-center gap-2 pr-4">
-                            <Play className="h-6 w-6 text-green-600 fill-green-600"/>
-                            <div className="h-1 w-24 bg-gray-300 rounded-full relative">
-                                <div className="absolute top-0 left-0 h-1 w-2/3 bg-green-600 rounded-full"></div>
-                                <div className="absolute -top-0.5 left-2/3 h-2 w-2 bg-green-600 rounded-full"></div>
+                            <Play className="h-6 w-6 text-green-500 fill-green-500"/>
+                            <div className="h-1 w-24 bg-gray-500 rounded-full relative">
+                                <div className="absolute top-0 left-0 h-1 w-2/3 bg-green-500 rounded-full"></div>
+                                <div className="absolute -top-0.5 left-2/3 h-2 w-2 bg-green-500 rounded-full"></div>
                             </div>
-                            <span className="text-xs text-gray-500">{message.audioLabel || '0:00'}</span>
+                            <span className="text-xs text-gray-400">{message.audioLabel || '0:00'}</span>
                         </div>
                     )}
                     
-                    {message.text && <p className="text-black whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: message.text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" class="text-blue-600 underline">$1</a>') }} />}
+                    {message.text && <p className="text-white whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: message.text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" class="text-blue-400 underline">$1</a>') }} />}
 
                     <div className="flex justify-end items-center gap-1 mt-1 h-3">
                         <span className="text-xs text-gray-400">
@@ -276,13 +333,16 @@ const WhatsAppLivePreview: React.FC<WhatsAppLivePreviewProps> = ({
   };
 
   return (
-    <div className={cn("aspect-[9/18] h-full max-h-[800px] w-auto max-w-full mx-auto bg-[#1c1c1c] rounded-[40px] border-[10px] border-black overflow-hidden shadow-2xl relative flex flex-col", className)}>
+    <div className={cn("aspect-[9/18] h-full max-h-[800px] w-auto max-w-full mx-auto bg-[#111B21] rounded-[40px] border-[10px] border-black overflow-hidden shadow-2xl relative flex flex-col", className)}>
         
-        {!options.hideTop && <StatusBar options={options} />}
+        <StatusBar options={options} />
         
-        <ChatHeader header={header} />
+        <ChatHeader header={header} options={options} />
 
-        <main className="flex-1 overflow-y-auto mt-[96px]">
+        <main className={cn(
+            "flex-1 overflow-y-auto",
+            options.hideTop ? 'mt-[68px]' : 'mt-[96px]'
+        )}>
           {renderContent()}
         </main>
         
