@@ -3,171 +3,175 @@
 import { useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Heart, Send, Sparkles, User } from 'lucide-react';
-
-type Message = {
-  sender: 'user' | 'ai';
-  text: string;
-};
-
-const InstagramAvatar = () => (
-  <div className="relative h-10 w-10">
-      <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-500"></div>
-      <div className="absolute inset-0.5 rounded-full bg-background p-0.5">
-          <Avatar className="h-full w-full">
-              <AvatarFallback className="bg-transparent">
-                  <Sparkles className="text-white" />
-              </AvatarFallback>
-          </Avatar>
-      </div>
-  </div>
-)
-
-const ChatMessage = ({ message, style }: { message: Message, style: 'whatsapp' | 'instagram' }) => {
-    const isUser = message.sender === 'user';
-    
-    const whatsappBubbleStyles = isUser
-        ? 'bg-[#075e54] text-white rounded-tr-none'
-        : 'bg-muted/80 text-white rounded-tl-none';
-
-    const instagramBubbleStyles = isUser
-        ? 'bg-blue-500 text-white rounded-br-none'
-        : 'bg-muted/80 text-white rounded-bl-none';
-
-    const bubbleStyles = style === 'whatsapp' ? whatsappBubbleStyles : instagramBubbleStyles;
-
-    return (
-        <div className={`flex items-start gap-4 ${isUser ? 'justify-end' : ''}`}>
-            {!isUser && (
-                style === 'whatsapp' ? (
-                    <Avatar className="h-10 w-10 border-2 border-primary/50">
-                        <AvatarFallback className="bg-primary/20">
-                            <Sparkles className="text-primary" />
-                        </AvatarFallback>
-                    </Avatar>
-                ) : <InstagramAvatar />
-            )}
-            <div className={`max-w-md rounded-2xl p-4 whitespace-pre-wrap ${bubbleStyles}`}>
-                <p>{message.text}</p>
-            </div>
-            {isUser && (
-                <Avatar className="h-10 w-10 border">
-                    <AvatarFallback><User /></AvatarFallback>
-                </Avatar>
-            )}
-        </div>
-    );
-};
+import { ImageIcon, Loader2, Sparkles, User } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
+import Image from 'next/image';
+import { generateWhatsappImage } from '@/ai/flows/whatsapp-image-generator';
+import { useToast } from '@/hooks/use-toast';
 
 export default function ReviewsPage() {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      sender: 'ai',
-      text: 'Olá! Sobre qual produto ou nicho você gostaria de gerar uma review hoje?',
-    },
-  ]);
-  const [inputValue, setInputValue] = useState('');
+  const { toast } = useToast();
+  const [name, setName] = useState('');
+  const [script, setScript] = useState('');
+  const [profilePic, setProfilePic] = useState<string | null>(null);
+  const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSendMessage = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!inputValue.trim()) return;
-
-    const userMessage: Message = { sender: 'user', text: inputValue };
-    setMessages((prev) => [...prev, userMessage]);
-    setInputValue('');
-    setIsLoading(true);
-
-    // Mock AI response
-    setTimeout(() => {
-      const aiResponse: Message = {
-        sender: 'ai',
-        text: `Excelente! Aqui está uma sugestão de review para "${userMessage.text}":\n\n"Simplesmente incrível! Usei este produto e os resultados foram visíveis em poucos dias. A qualidade superou todas as minhas expectativas. Recomendo a todos que procuram uma solução eficaz e de confiança. Nota 10/10!"`,
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfilePic(reader.result as string);
       };
-      setMessages((prev) => [...prev, aiResponse]);
-      setIsLoading(false);
-    }, 1500);
+      reader.readAsDataURL(file);
+    }
   };
-  
-  const ChatInterface = ({ style }: { style: 'whatsapp' | 'instagram' }) => (
-    <Card className="flex-1 mt-6 flex flex-col glassmorphic">
+
+  const handleGenerate = async () => {
+    if (!name || !script) {
+      toast({
+        variant: 'destructive',
+        title: 'Campos obrigatórios',
+        description: 'Por favor, preencha o nome e o roteiro da conversa.',
+      });
+      return;
+    }
+    setIsLoading(true);
+    setGeneratedImage(null);
+    try {
+      const result = await generateWhatsappImage({
+        contactName: name,
+        chatScript: script,
+        profilePictureDataUri: profilePic,
+      });
+      setGeneratedImage(result.imageDataUri);
+    } catch (error) {
+      console.error(error);
+      toast({
+        variant: 'destructive',
+        title: 'Erro ao gerar imagem',
+        description:
+          'Não foi possível gerar a imagem. Tente novamente mais tarde.',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const WhatsAppGenerator = () => (
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-6">
+      <Card className="glassmorphic">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Sparkles className="text-primary h-6 w-6" />
-            Assistente de Reviews
+            Configurações da Conversa
           </CardTitle>
           <CardDescription>
-            Descreva o produto e a IA criará uma review para você no estilo {style === 'whatsapp' ? 'WhatsApp' : 'Instagram'}.
+            Preencha os detalhes para gerar a imagem da sua conversa de WhatsApp.
           </CardDescription>
         </CardHeader>
-        <CardContent className="flex-1 overflow-y-auto space-y-6 p-6">
-          {messages.map((message, index) => (
-            <ChatMessage key={index} message={message} style={style} />
-          ))}
+        <CardContent className="space-y-6">
+          <div className="space-y-2">
+            <Label htmlFor="contact-name">Nome do Contato</Label>
+            <Input
+              id="contact-name"
+              placeholder="Ex: Cliente Satisfeito"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="profile-pic">Foto de Perfil (Opcional)</Label>
+            <div className="flex items-center gap-4">
+              <Avatar className="h-16 w-16">
+                <AvatarImage src={profilePic ?? undefined} />
+                <AvatarFallback>
+                  <User className="h-8 w-8" />
+                </AvatarFallback>
+              </Avatar>
+              <Input id="profile-pic" type="file" accept="image/*" onChange={handleFileChange} className="max-w-xs" />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="script">Roteiro da Conversa</Label>
+            <Textarea
+              id="script"
+              placeholder="Digite a conversa aqui. Ex:
+Cliente: Olá, recebi meu produto!
+Eu: Que ótimo! O que achou?"
+              value={script}
+              onChange={(e) => setScript(e.target.value)}
+              className="h-48"
+            />
+             <p className="text-xs text-muted-foreground">Use "Eu:" para as suas mensagens e o nome do contato para as dele.</p>
+          </div>
+          <Button onClick={handleGenerate} disabled={isLoading} size="lg" className="w-full">
+            {isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Gerando Imagem...
+              </>
+            ) : (
+              'Gerar Imagem'
+            )}
+          </Button>
+        </CardContent>
+      </Card>
+      <Card className="glassmorphic flex items-center justify-center">
+        <CardContent className="p-6 w-full h-full">
           {isLoading && (
-             <div className="flex items-start gap-4">
-                {style === 'whatsapp' ? (
-                    <Avatar className="h-10 w-10 border-2 border-primary/50">
-                        <AvatarFallback className="bg-primary/20">
-                            <Sparkles className="text-primary" />
-                        </AvatarFallback>
-                    </Avatar>
-                ) : <InstagramAvatar />}
-                <div className="max-w-md rounded-2xl p-4 bg-muted/80 rounded-bl-none">
-                   <div className="flex items-center gap-2">
-                        <span className="h-2 w-2 bg-primary rounded-full animate-pulse delay-0"></span>
-                        <span className="h-2 w-2 bg-primary rounded-full animate-pulse delay-150"></span>
-                        <span className="h-2 w-2 bg-primary rounded-full animate-pulse delay-300"></span>
-                   </div>
-                </div>
-              </div>
+            <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
+              <Loader2 className="h-16 w-16 animate-spin text-primary mb-4" />
+              <p>Aguarde, a IA está criando sua imagem...</p>
+            </div>
+          )}
+          {generatedImage && (
+            <div className="w-full h-full relative">
+              <Image 
+                src={generatedImage} 
+                alt="Conversa gerada" 
+                fill
+                className="object-contain rounded-md"
+              />
+            </div>
+          )}
+          {!isLoading && !generatedImage && (
+            <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
+              <ImageIcon className="h-16 w-16 mb-4" />
+              <h3 className="font-bold text-lg">Sua imagem aparecerá aqui</h3>
+              <p>Preencha os dados e clique em "Gerar Imagem" para começar.</p>
+            </div>
           )}
         </CardContent>
-        <CardFooter className="border-t border-white/10 p-4">
-          <form onSubmit={handleSendMessage} className="flex w-full items-center gap-2">
-            {style === 'instagram' && <Heart className="text-muted-foreground h-6 w-6 cursor-pointer hover:text-red-500" />}
-            <Input
-              type="text"
-              placeholder="Ex: um encapsulado para foco e memória..."
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              disabled={isLoading}
-              className="h-12 text-base"
-            />
-            <Button type="submit" size="lg" className="h-12" disabled={isLoading}>
-              <Send className="h-5 w-5" />
-            </Button>
-          </form>
-        </CardFooter>
       </Card>
-  )
+    </div>
+  );
 
   return (
-    <div className="flex flex-col h-[calc(100vh-10rem)]">
-       <div>
+    <div className="flex flex-col h-full">
+      <div>
         <h1 className="text-3xl font-bold tracking-tight text-foreground">
           Gerador de Reviews
         </h1>
         <p className="text-muted-foreground">
-          Crie avaliações autênticas e persuasivas em segundos.
+          Crie imagens de conversas de WhatsApp e Instagram em segundos.
         </p>
       </div>
-      
+
       <Tabs defaultValue="whatsapp" className="flex-1 mt-6 flex flex-col">
-          <TabsList className="grid w-full grid-cols-2 max-w-sm self-start bg-muted/80">
-            <TabsTrigger value="whatsapp">WhatsApp</TabsTrigger>
-            <TabsTrigger value="instagram">Instagram</TabsTrigger>
-          </TabsList>
-          <TabsContent value="whatsapp" className="flex-1 flex flex-col -mt-4">
-            <ChatInterface style="whatsapp" />
-          </TabsContent>
-          <TabsContent value="instagram" className="flex-1 flex flex-col -mt-4">
-            <ChatInterface style="instagram" />
-          </TabsContent>
-        </Tabs>
+        <TabsList className="grid w-full grid-cols-2 max-w-sm self-start bg-muted/80">
+          <TabsTrigger value="whatsapp">WhatsApp</TabsTrigger>
+          <TabsTrigger value="instagram" disabled>Instagram (em breve)</TabsTrigger>
+        </TabsList>
+        <TabsContent value="whatsapp" className="flex-1 flex flex-col -mt-4">
+          <WhatsAppGenerator />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
