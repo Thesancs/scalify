@@ -1,7 +1,7 @@
 'use client';
 
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import {
   Select,
   SelectContent,
@@ -24,6 +24,7 @@ const ofertasEscaladas = [
     status: 'escalando',
     imageUrl: 'https://picsum.photos/seed/oferta-1/600/400',
     imageHint: 'abstract technology',
+    score: 'Alto'
   },
   {
     id: '2',
@@ -36,6 +37,7 @@ const ofertasEscaladas = [
     status: 'escalando',
     imageUrl: 'https://picsum.photos/seed/oferta-2/600/400',
     imageHint: 'health science',
+    score: 'Alto'
   },
   {
     id: '3',
@@ -45,9 +47,10 @@ const ofertasEscaladas = [
     ads: 140,
     roas: 2,
     ticket: 30,
-    status: 'risco',
+    status: 'queda',
     imageUrl: 'https://picsum.photos/seed/oferta-3/600/400',
     imageHint: 'healthy food',
+    score: 'Baixo'
   },
    {
     id: '4',
@@ -59,7 +62,8 @@ const ofertasEscaladas = [
     ticket: 997,
     status: 'escalando',
     imageUrl: 'https://picsum.photos/seed/oferta-4/600/400',
-    imageHint: 'software interface'
+    imageHint: 'software interface',
+    score: 'Médio'
   },
   {
     id: '5',
@@ -69,9 +73,10 @@ const ofertasEscaladas = [
     ads: 95,
     roas: 2.5,
     ticket: 197,
-    status: 'risco',
+    status: 'estável',
     imageUrl: 'https://picsum.photos/seed/oferta-5/600/400',
-    imageHint: 'cosmetics beauty'
+    imageHint: 'cosmetics beauty',
+    score: 'Médio'
   },
 ];
 
@@ -80,10 +85,10 @@ export default function OfertasPage() {
     <div className="flex flex-col gap-8">
       <div>
         <h1 className="text-3xl font-bold tracking-tight text-foreground">
-          Ofertas Escaladas
+          Catálogo de Ofertas
         </h1>
         <p className="text-muted-foreground">
-          Encontre as melhores oportunidades para escalar.
+          Encontre e filtre as melhores oportunidades para escalar.
         </p>
       </div>
 
@@ -95,18 +100,29 @@ export default function OfertasPage() {
           <SelectContent>
             <SelectItem value="todos">Todos</SelectItem>
             <SelectItem value="escalando">Escalando</SelectItem>
-            <SelectItem value="risco">Em Risco</SelectItem>
+            <SelectItem value="estavel">Estável</SelectItem>
+            <SelectItem value="queda">Em Queda</SelectItem>
           </SelectContent>
         </Select>
         <Select>
           <SelectTrigger className="w-full sm:w-[180px]">
-            <SelectValue placeholder="Nicho" />
+            <SelectValue placeholder="Score" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="saude">Saúde</SelectItem>
-            <SelectItem value="financas">Finanças</SelectItem>
-            <SelectItem value="educacao">Educação</SelectItem>
-            <SelectItem value="beleza">Beleza</SelectItem>
+            <SelectItem value="todos">Todos</SelectItem>
+            <SelectItem value="alto">Alto</SelectItem>
+            <SelectItem value="medio">Médio</SelectItem>
+            <SelectItem value="baixo">Baixo</SelectItem>
+          </SelectContent>
+        </Select>
+        <Select>
+          <SelectTrigger className="w-full sm:w-[180px]">
+            <SelectValue placeholder="Tipo" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="infoproduto">Infoproduto</SelectItem>
+            <SelectItem value="encapsulado">Encapsulado</SelectItem>
+            <SelectItem value="saas">SaaS</SelectItem>
           </SelectContent>
         </Select>
         <Select>
@@ -117,16 +133,6 @@ export default function OfertasPage() {
             <SelectItem value="vsl">VSL</SelectItem>
             <SelectItem value="quiz">Quiz</SelectItem>
             <SelectItem value="landing-page">Landing Page</SelectItem>
-          </SelectContent>
-        </Select>
-        <Select>
-          <SelectTrigger className="w-full sm:w-[180px]">
-            <SelectValue placeholder="Idioma" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="pt">Português</SelectItem>
-            <SelectItem value="en">Inglês</SelectItem>
-            <SelectItem value="es">Espanhol</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -143,6 +149,11 @@ export default function OfertasPage() {
                   className="object-cover"
                   data-ai-hint={oferta.imageHint}
                 />
+                 <div className="absolute top-2 right-2">
+                    <Badge variant="secondary" className="bg-black/50 text-white backdrop-blur-sm">
+                        Score: {oferta.score}
+                    </Badge>
+                </div>
               </div>
               <CardHeader>
                 <CardTitle className="text-lg font-bold text-foreground">
@@ -169,14 +180,18 @@ export default function OfertasPage() {
                   </div>
                 </div>
               </CardContent>
-               <CardContent>
+               <CardFooter>
                  <Badge
                     variant={oferta.status === 'escalando' ? 'default' : 'destructive'}
-                    className={`w-full justify-center ${oferta.status === 'escalando' ? 'bg-green-500/20 text-green-400 border-green-500/30' : 'bg-red-500/20 text-red-400 border-red-500/30'}`}
+                    className={`w-full justify-center capitalize ${
+                        oferta.status === 'escalando' ? 'bg-green-500/20 text-green-400 border-green-500/30' : 
+                        oferta.status === 'estável' ? 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' : 
+                        'bg-red-500/20 text-red-400 border-red-500/30'
+                    }`}
                   >
-                    {oferta.status === 'escalando' ? 'Escalando' : 'Em Risco'}
+                    {oferta.status}
                   </Badge>
-              </CardContent>
+              </CardFooter>
             </Card>
           </Link>
         ))}

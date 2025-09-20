@@ -2,12 +2,13 @@
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, BarChart2, CheckCircle, ExternalLink, Library, PlusCircle, TrendingUp } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { ArrowLeft, BarChart2, CheckCircle, ExternalLink, Library, PlusCircle, Star, Ticket, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { useToast } from '@/hooks/use-toast';
 
-// Mock data - in a real app, this would come from an API
+// Mock data
 const ofertasEscaladas = [
   {
     id: '1',
@@ -18,8 +19,7 @@ const ofertasEscaladas = [
     roas: 2,
     ticket: 297,
     status: 'escalando',
-    imageUrl: 'https://picsum.photos/seed/oferta-1/600/400',
-    imageHint: 'abstract technology',
+    score: 'Alto',
     descricao: 'Descubra o método que está revolucionando o mercado digital. Uma estratégia de vendas rápida e eficaz para alavancar seus resultados em tempo recorde.'
   },
   {
@@ -31,8 +31,7 @@ const ofertasEscaladas = [
     roas: 2,
     ticket: 467,
     status: 'escalando',
-    imageUrl: 'https://picsum.photos/seed/oferta-2/600/400',
-    imageHint: 'health science',
+    score: 'Alto',
     descricao: 'A fórmula inovadora que atua diretamente na queima de gordura localizada. Um produto com alta conversão e ticket elevado, ideal para escalar suas campanhas.'
   },
   {
@@ -43,23 +42,26 @@ const ofertasEscaladas = [
     ads: 140,
     roas: 2,
     ticket: 30,
-    status: 'risco',
-    imageUrl: 'https://picsum.photos/seed/oferta-3/600/400',
-    imageHint: 'healthy food',
+    status: 'queda',
+    score: 'Baixo',
     descricao: 'Um e-book completo com 100 receitas para quem busca uma alimentação saudável e rica em proteínas. Perfeito para nichos de fitness e bem-estar.'
   },
 ];
 
 export default function OfertaPage({ params }: { params: { id: string } }) {
+  const { toast } = useToast();
   const oferta = ofertasEscaladas.find((o) => o.id === params.id);
 
   if (!oferta) {
     notFound();
   }
   
-  const handleSave = () => {
-    console.log(`Oferta "${oferta.title}" salva!`);
-    // Here you would typically update a state or call an API
+  const handleSaveToWatchlist = () => {
+    console.log(`Oferta "${oferta.title}" salva na Watchlist!`);
+    toast({
+        title: 'Oferta Salva!',
+        description: `"${oferta.title}" foi adicionada à sua Watchlist. Vamos avisar se algo mudar.`,
+    })
   };
 
   return (
@@ -74,9 +76,9 @@ export default function OfertaPage({ params }: { params: { id: string } }) {
                 <CardHeader>
                     <div className="flex flex-wrap items-center gap-4 mb-4">
                         <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground flex-1">{oferta.title}</h1>
-                        <div className={`flex items-center gap-2 text-sm font-bold ${oferta.status === 'escalando' ? 'text-green-500' : 'text-red-500'}`}>
-                            {oferta.status === 'escalando' ? 'Escalando' : 'Em Risco'}
-                        </div>
+                        <Badge variant="secondary" className="bg-black/50 text-white backdrop-blur-sm text-base">
+                            Score de Escala: {oferta.score}
+                        </Badge>
                     </div>
                     <div className="flex flex-wrap gap-2">
                         <Badge variant="secondary" className="text-sm">{oferta.type}</Badge>
@@ -84,24 +86,38 @@ export default function OfertaPage({ params }: { params: { id: string } }) {
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-6 my-6 text-center">
-                        <div className="rounded-lg p-4 bg-muted/50">
-                            <p className="text-sm text-muted-foreground flex items-center justify-center gap-2"><BarChart2 className="h-4 w-4" /> Anúncios</p>
-                            <p className="text-2xl font-bold text-foreground">{oferta.ads}</p>
-                        </div>
-                        <div className="rounded-lg p-4 bg-muted/50">
-                            <p className="text-sm text-muted-foreground flex items-center justify-center gap-2"><TrendingUp className="h-4 w-4" /> ROAS</p>
-                            <p className="text-2xl font-bold text-foreground">{oferta.roas}x</p>
-                        </div>
-                        <div className="rounded-lg p-4 bg-muted/50 col-span-2 md:col-span-1">
-                            <p className="text-sm text-muted-foreground">Ticket Médio</p>
-                            <p className="text-2xl font-bold text-foreground">R${oferta.ticket}</p>
-                        </div>
-                    </div>
-                    
-                    <div className="mt-8">
-                        <h2 className="text-2xl font-bold text-foreground mb-3">Descrição da Oferta</h2>
+                    <div className="mt-4 mb-8">
                         <p className="text-muted-foreground leading-relaxed">{oferta.descricao}</p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-6">
+                        <Card className="glassmorphic">
+                            <CardHeader>
+                                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2"><BarChart2 className="h-4 w-4"/> Anúncios Ativos</CardTitle>
+                                <CardDescription className="text-xs">Indicador de verba e tração.</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <p className="text-3xl font-bold text-foreground">{oferta.ads}</p>
+                            </CardContent>
+                        </Card>
+                         <Card className="glassmorphic">
+                            <CardHeader>
+                                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2"><TrendingUp className="h-4 w-4"/> ROAS Observado</CardTitle>
+                                <CardDescription className="text-xs">Referência de eficiência — não é garantia.</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <p className="text-3xl font-bold text-foreground">{oferta.roas}x</p>
+                            </CardContent>
+                        </Card>
+                         <Card className="glassmorphic">
+                            <CardHeader>
+                                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2"><Ticket className="h-4 w-4"/> Ticket Médio</CardTitle>
+                                <CardDescription className="text-xs">Preço praticado recentemente.</CardDescription>
+                            </CardHeader>
+                             <CardContent>
+                                <p className="text-3xl font-bold text-foreground">R${oferta.ticket}</p>
+                            </CardContent>
+                        </Card>
                     </div>
                 </CardContent>
             </Card>
@@ -110,16 +126,10 @@ export default function OfertaPage({ params }: { params: { id: string } }) {
                 <CardHeader>
                     <CardTitle>Ações Rápidas</CardTitle>
                 </CardHeader>
-                <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                     <Button size="lg" className="h-16 text-lg" onClick={handleSave}>
-                        <CheckCircle className="mr-2 h-6 w-6" />
-                        Salvar Oferta
-                    </Button>
-                    <Button size="lg" className="h-16 text-lg" variant="outline" asChild>
-                        <Link href={`/dashboard/watchlist?add=${oferta.id}`}>
-                           <PlusCircle className="mr-2 h-6 w-6" />
-                           Adicionar à Watchlist
-                        </Link>
+                <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                     <Button size="lg" className="h-16 text-lg" variant="outline" onClick={handleSaveToWatchlist}>
+                        <Star className="mr-2 h-6 w-6" />
+                        Adicionar à Watchlist
                     </Button>
                      <Button size="lg" className="h-16 text-lg" asChild>
                         <Link href={`/anuncios/${oferta.id}`}>
