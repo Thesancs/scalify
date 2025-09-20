@@ -182,7 +182,11 @@ export default function OfertasPage() {
               </CardContent>
                <CardFooter>
                  <Badge
-                    variant={oferta.status === 'escalando' ? 'default' : 'destructive'}
+                    variant={
+                      oferta.status === 'escalando' ? 'default'
+                      : oferta.status === 'estável' ? 'secondary'
+                      : 'destructive'
+                    }
                     className={`w-full justify-center capitalize ${
                         oferta.status === 'escalando' ? 'bg-green-500/20 text-green-400 border-green-500/30' : 
                         oferta.status === 'estável' ? 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' : 

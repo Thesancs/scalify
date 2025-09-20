@@ -10,23 +10,19 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
 import {
   Table,
   TableBody,
   TableCell,
-  TableHead,
-  TableHeader,
   TableRow,
 } from '@/components/ui/table';
 import {
   ArrowRight,
   CheckCircle,
-  Clock,
   Flame,
   Star,
-  TrendingUp,
   Ticket,
+  TrendingUp,
 } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
@@ -137,7 +133,7 @@ export default function DashboardPage() {
                               <span className="flex items-center gap-2"><Flame className="h-4 w-4" /> Anúncios ativos:</span>
                               <span className="font-bold text-foreground">{oferta.sinais.anuncios}</span>
                           </div>
-                          <div className="flex items-center justify-between" title="Referência de eficiência — não é garantia">
+                          <div className="flex items-center justify-between" title="Tendência dos últimos 7 dias">
                               <span className="flex items-center gap-2"><TrendingUp className="h-4 w-4" /> Tendência 7d:</span>
                               <span className="font-bold text-foreground">{oferta.sinais.tendencia}</span>
                           </div>

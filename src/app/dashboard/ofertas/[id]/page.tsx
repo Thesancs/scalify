@@ -3,10 +3,10 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, BarChart2, CheckCircle, ExternalLink, Library, PlusCircle, Star, Ticket, TrendingUp } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { ArrowLeft, BarChart2, Library, Star, Ticket, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { useToast } from '@/hooks/use-toast';
 
 // Mock data
 const ofertasEscaladas = [
@@ -46,6 +46,30 @@ const ofertasEscaladas = [
     score: 'Baixo',
     descricao: 'Um e-book completo com 100 receitas para quem busca uma alimentação saudável e rica em proteínas. Perfeito para nichos de fitness e bem-estar.'
   },
+   {
+    id: '4',
+    title: 'Automação para SaaS',
+    type: 'SaaS',
+    format: 'Landing Page',
+    ads: 320,
+    roas: 3,
+    ticket: 997,
+    status: 'escalando',
+    score: 'Médio',
+    descricao: 'Solução B2B com ticket alto e demanda crescente. Pouca concorrência e alto potencial de escala no Brasil.'
+  },
+  {
+    id: '5',
+    title: 'Kit de Beleza Natural',
+    type: 'Encapsulado',
+    format: 'VSL',
+    ads: 95,
+    roas: 2.5,
+    ticket: 197,
+    status: 'estável',
+    score: 'Médio',
+    descricao: 'Kit com produtos de beleza naturais, com foco em sustentabilidade e bem-estar. Mercado em alta com público fiel.'
+  },
 ];
 
 export default function OfertaPage({ params }: { params: { id: string } }) {
@@ -57,7 +81,6 @@ export default function OfertaPage({ params }: { params: { id: string } }) {
   }
   
   const handleSaveToWatchlist = () => {
-    console.log(`Oferta "${oferta.title}" salva na Watchlist!`);
     toast({
         title: 'Oferta Salva!',
         description: `"${oferta.title}" foi adicionada à sua Watchlist. Vamos avisar se algo mudar.`,
@@ -66,9 +89,9 @@ export default function OfertaPage({ params }: { params: { id: string } }) {
 
   return (
     <div className="container mx-auto max-w-4xl py-8 animate-fade-in">
-        <Link href="/dashboard" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6">
+        <Link href="/dashboard/ofertas" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6">
             <ArrowLeft className="h-4 w-4" />
-            Voltar para o Dashboard
+            Voltar para o Catálogo
         </Link>
         
         <div className="flex flex-col gap-8">
