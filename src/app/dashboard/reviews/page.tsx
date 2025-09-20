@@ -7,12 +7,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ImageIcon, Loader2, Sparkles, User, Settings, PlusCircle, Trash2, ArrowUp, ArrowDown } from 'lucide-react';
+import { Settings, PlusCircle, Trash2, ArrowUp, ArrowDown, Sparkles, Loader2 } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
-import Image from 'next/image';
 import { generateWhatsappImage } from '@/ai/flows/whatsapp-image-generator';
 import { useToast } from '@/hooks/use-toast';
 import { Separator } from '@/components/ui/separator';
+import WhatsAppLivePreview, { type ChatMessage } from '@/components/reviews/WhatsAppLivePreview';
 
 type Message = {
   id: number;
@@ -28,6 +28,7 @@ export default function ReviewsPage() {
   const [profilePic, setProfilePic] = useState<string | null>(null);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   
   const [messages, setMessages] = useState<Message[]>([
     { id: 1, sender: 'Contato', text: 'Olá, recebi meu produto!', status: 'lido', time: '14:20' },
@@ -60,6 +61,7 @@ export default function ReviewsPage() {
       return;
     }
     setIsLoading(true);
+    setError(null);
     setGeneratedImage(null);
     try {
       const result = await generateWhatsappImage({
@@ -70,11 +72,12 @@ export default function ReviewsPage() {
       setGeneratedImage(result.imageDataUri);
     } catch (error) {
       console.error(error);
+      setError('Não foi possível gerar a imagem. Tente novamente mais tarde.');
       toast({
         variant: 'destructive',
         title: 'Erro ao gerar imagem',
         description:
-          'Não foi possível gerar a imagem. Tente novamente mais tarde.',
+          'Ocorreu um erro inesperado. Verifique o console para mais detalhes.',
       });
     } finally {
       setIsLoading(false);
@@ -95,6 +98,13 @@ export default function ReviewsPage() {
   const deleteMessage = (id: number) => {
     setMessages(messages.filter(msg => msg.id !== id));
   }
+
+  const chatMessagesForPreview: ChatMessage[] = messages.map((m): ChatMessage => ({
+    id: String(m.id),
+    sender: m.sender === 'Eu' ? 'me' : 'client',
+    text: m.text,
+    time: m.time,
+  }));
 
   const WhatsAppGenerator = () => (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-6">
@@ -124,9 +134,9 @@ export default function ReviewsPage() {
                 <Label htmlFor="profile-pic">Foto de Perfil (Opcional)</Label>
                 <div className="flex items-center gap-4">
                 <Avatar className="h-16 w-16">
-                    <AvatarImage src={profilePic ?? undefined} />
-                    <AvatarFallback>
-                    <User className="h-8 w-8" />
+                    <AvatarImage src={profilePic ?? undefined} data-ai-hint="person avatar"/>
+                    <AvatarFallback className="bg-muted/50">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-muted-foreground"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                     </AvatarFallback>
                 </Avatar>
                 <Input id="profile-pic" type="file" accept="image/*" onChange={handleFileChange} className="max-w-xs" />
@@ -185,36 +195,15 @@ export default function ReviewsPage() {
           </Button>
         </CardContent>
       </Card>
-      <Card className="glassmorphic flex items-center justify-center">
-        <CardHeader className="w-full h-full">
-            <CardTitle>Preview</CardTitle>
-            <CardContent className="p-0 w-full h-full pt-4">
-            {isLoading && (
-                <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
-                <Loader2 className="h-16 w-16 animate-spin text-primary mb-4" />
-                <p>Aguarde, a IA está criando sua imagem...</p>
-                <p className="text-xs mt-2">Isso pode levar alguns segundos.</p>
-                </div>
-            )}
-            {generatedImage && (
-                <div className="w-full h-full relative">
-                <Image 
-                    src={generatedImage} 
-                    alt="Conversa gerada" 
-                    fill
-                    className="object-contain rounded-md"
-                />
-                </div>
-            )}
-            {!isLoading && !generatedImage && (
-                <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground border-2 border-dashed border-white/10 rounded-lg">
-                <ImageIcon className="h-16 w-16 mb-4" />
-                <h3 className="font-bold text-lg">Sua imagem aparecerá aqui</h3>
-                <p>Preencha os dados e clique em "Gerar Imagem" para começar.</p>
-                </div>
-            )}
-            </CardContent>
-        </CardHeader>
+      <Card className="glassmorphic flex items-center justify-center p-0 lg:p-6">
+         <WhatsAppLivePreview
+            contactName={contactName}
+            avatarUrl={profilePic}
+            messages={chatMessagesForPreview}
+            loading={isLoading}
+            error={error}
+            className="w-full h-full"
+          />
       </Card>
     </div>
   );
@@ -226,7 +215,7 @@ export default function ReviewsPage() {
           Gerador de Reviews
         </h1>
         <p className="text-muted-foreground">
-          Crie imagens de conversas de WhatsApp e Instagram em segundos.
+          Crie imagens de conversas de WhatsApp em segundos.
         </p>
       </div>
 
