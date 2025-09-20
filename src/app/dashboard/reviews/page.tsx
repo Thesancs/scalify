@@ -12,7 +12,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { generateWhatsappImage } from '@/ai/flows/whatsapp-image-generator';
 import { useToast } from '@/hooks/use-toast';
 import { Separator } from '@/components/ui/separator';
-import WhatsAppLivePreview, { type ChatMessage } from '@/components/reviews/WhatsAppLivePreview';
+import WhatsAppLivePreview, {
+  type ChatMessage,
+  type StatusBarOptions,
+  type ChatHeaderOptions,
+} from '@/components/reviews/WhatsAppLivePreview';
 
 type Message = {
   id: number;
@@ -102,9 +106,28 @@ export default function ReviewsPage() {
   const chatMessagesForPreview: ChatMessage[] = messages.map((m): ChatMessage => ({
     id: String(m.id),
     sender: m.sender === 'Eu' ? 'me' : 'client',
+    kind: 'text',
     text: m.text,
     time: m.time,
   }));
+
+  const chatHeaderForPreview: ChatHeaderOptions = {
+    name: contactName,
+    profileUrl: profilePic,
+    status: 'online',
+  };
+
+  const statusBarOptions: StatusBarOptions = {
+    interfaceStyle: 'iphone',
+    phoneTime: '10:04',
+    icons: {
+      networkLabel: '4G',
+      batteryPercent: 80,
+      charging: false,
+      signalBars: 4,
+      wifi: true,
+    }
+  }
 
   const WhatsAppGenerator = () => (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-6">
@@ -195,10 +218,10 @@ export default function ReviewsPage() {
           </Button>
         </CardContent>
       </Card>
-      <Card className="glassmorphic flex items-center justify-center p-0 lg:p-6">
+      <Card className="glassmorphic flex items-center justify-center p-0 lg:p-6 bg-transparent border-0 shadow-none">
          <WhatsAppLivePreview
-            contactName={contactName}
-            avatarUrl={profilePic}
+            options={statusBarOptions}
+            header={chatHeaderForPreview}
             messages={chatMessagesForPreview}
             loading={isLoading}
             error={error}

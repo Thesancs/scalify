@@ -3,42 +3,180 @@ import React, { useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
-import { Image as ImageIcon, Loader2, Wifi, Signal, BatteryFull } from 'lucide-react';
+import {
+  Image as ImageIcon,
+  Loader2,
+  Wifi,
+  Signal,
+  BatteryFull,
+  ArrowLeft,
+  Video,
+  Phone,
+  MoreVertical,
+  Paperclip,
+  Camera,
+  Mic,
+  Plus,
+  Smile,
+  Triangle,
+  Circle as CircleIcon,
+  Square,
+  Play,
+  Volume2,
+} from 'lucide-react';
 
+export type MessageKind = 'text' | 'image' | 'audio';
 
 export type ChatMessage = {
   id: string;
   sender: 'client' | 'me';
-  text: string;
+  kind?: MessageKind;
+  text?: string;
+  imageUrl?: string;
+  audioLabel?: string;
   time?: string;
 };
 
-type Props = {
-  contactName: string;
-  avatarUrl?: string | null;
+export type StatusBarOptions = {
+  hideTop?: boolean;
+  interfaceStyle?: 'android' | 'iphone';
+  phoneTime?: string;
+  showBackArrow?: boolean;
+  showKeyboard?: boolean;
+  icons?: {
+    location?: boolean;
+    networkLabel?: '3G' | '4G' | '5G' | 'LTE' | '';
+    batteryPercent?: number;
+    charging?: boolean;
+    signalBars?: 0 | 1 | 2 | 3 | 4 | 5;
+    wifi?: boolean;
+    airplane?: boolean;
+  };
+};
+
+export type ChatHeaderOptions = {
+  name: string;
+  status?: string;
+  unreadCount?: string;
+  profileUrl?: string | null;
+};
+
+export type WhatsAppLivePreviewProps = {
+  options?: StatusBarOptions;
+  header: ChatHeaderOptions;
   messages: ChatMessage[];
   loading?: boolean;
   error?: string | null;
   className?: string;
+  hideBottom?: boolean;
 };
 
 const DEFAULT_TIME = '08:42';
+const DEFAULT_PHONE_TIME = '10:04';
 
-/**
- * A client-side component that renders a live preview of a WhatsApp conversation
- * inside a smartphone-like frame. It updates in real-time as props change.
- */
-const WhatsAppLivePreview: React.FC<Props> = ({
-  contactName,
-  avatarUrl,
+const StatusBar = ({ options }: { options: StatusBarOptions }) => {
+  const { interfaceStyle = 'iphone', phoneTime = DEFAULT_PHONE_TIME, icons = {} } = options;
+  const {
+    networkLabel = 'LTE',
+    batteryPercent = 80,
+    charging = false,
+    signalBars = 4,
+    wifi = true,
+  } = icons;
+
+  if (interfaceStyle === 'android') {
+    return (
+      <div className="absolute top-0 left-0 right-0 h-8 px-4 flex items-center justify-end gap-2 text-white/90 bg-black/20 z-20">
+        {wifi && <Wifi size={16} />}
+        <span className="text-xs font-sans">{networkLabel}</span>
+        <div className="flex items-center gap-0.5">
+          <span className="text-xs font-sans">{batteryPercent}%</span>
+          {charging ? <BatteryFull size={20} className="relative"><path d="M6 7h8v10H6z" /><path d="m10 5-3 4h4l-3 4" /></BatteryFull> : <BatteryFull size={20} />}
+        </div>
+      </div>
+    );
+  }
+  // iPhone style
+  return (
+    <div className="absolute top-0 left-0 right-0 h-10 px-6 flex items-center justify-between text-white/90 z-20">
+      <span className="text-sm font-semibold w-12 text-center">{phoneTime}</span>
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-black rounded-b-xl"></div>
+      <div className="flex items-center gap-1.5">
+        {wifi && <Wifi size={16} />}
+        <Signal size={16} />
+        <div className="flex items-center gap-0.5">
+            <span className="text-xs font-sans">{batteryPercent}%</span>
+            <BatteryFull size={24} className={cn(charging && 'text-green-400')} />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+
+const ChatHeader = ({ header }: { header: ChatHeaderOptions }) => {
+    return (
+        <header className="absolute top-0 left-0 right-0 z-10 flex items-center p-3 pt-12 bg-[#075e54] text-white">
+            <Avatar className="h-10 w-10 mr-3 border-2 border-white/50">
+                <AvatarImage src={header.profileUrl ?? undefined} alt={header.name} data-ai-hint="person avatar" />
+                <AvatarFallback className="bg-gray-600 text-lg">
+                    {header.name?.charAt(0).toUpperCase()}
+                </AvatarFallback>
+            </Avatar>
+            <div className="flex-1">
+                <h2 className="font-semibold text-lg">{header.name}</h2>
+                {header.status && <p className="text-sm text-white/80">{header.status}</p>}
+            </div>
+            <div className="flex items-center gap-5 text-white/90">
+                <Video size={24} />
+                <Phone size={24} />
+                <MoreVertical size={24} />
+            </div>
+        </header>
+    );
+}
+
+const ChatInput = ({ hidden, showKeyboard }: { hidden?: boolean, showKeyboard?: boolean }) => {
+    if (hidden) return null;
+    if (showKeyboard) {
+        return (
+             <div className="h-[290px] w-full bg-[#1c1c1c] flex-shrink-0" />
+        )
+    }
+    return (
+        <div className="h-14 bg-[#075e54] flex items-center px-2 py-2 gap-2">
+            <div className="flex-1 bg-white rounded-full flex items-center px-4 gap-2">
+                <Smile className="text-gray-500" />
+                <span className="text-gray-400 text-lg flex-1">Mensagem</span>
+                <Paperclip className="text-gray-500 -rotate-45" />
+                <Camera className="text-gray-500" />
+            </div>
+            <div className="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center">
+                <Mic className="text-white" />
+            </div>
+        </div>
+    )
+}
+
+
+const WhatsAppLivePreview: React.FC<WhatsAppLivePreviewProps> = ({
+  options = {},
+  header,
   messages,
   loading = false,
   error = null,
   className,
+  hideBottom = false,
 }) => {
   const sanitizedMessages = useMemo(() => {
-    return messages.filter((msg) => msg.text && msg.text.trim().length > 0);
+    return messages.filter((msg) => (msg.text && msg.text.trim().length > 0) || msg.imageUrl || msg.audioLabel);
   }, [messages]);
+
+  console.log('[WhatsAppLivePreview] v2', { 
+      contactName: header.name, 
+      messagesLength: sanitizedMessages.length,
+      options,
+  });
 
   const renderContent = () => {
     if (loading) {
@@ -92,13 +230,30 @@ const WhatsAppLivePreview: React.FC<Props> = ({
                 >
                     <div
                     className={cn(
-                        'relative rounded-lg px-3 py-2 text-sm text-gray-800 shadow-md',
+                        'relative rounded-lg px-3 py-1.5 text-sm text-gray-800 shadow-md',
                         message.sender === 'me'
                         ? 'bg-[#d9fdd3] rounded-tr-none'
                         : 'bg-white rounded-tl-none'
                     )}
                     >
-                    <p className="text-black">{message.text}</p>
+                    
+                    {message.kind === 'image' && message.imageUrl && (
+                        <img src={message.imageUrl} alt="chat image" className="rounded-md mb-1" data-ai-hint="user content" />
+                    )}
+
+                    {message.kind === 'audio' && (
+                        <div className="flex items-center gap-2 pr-4">
+                            <Play className="h-6 w-6 text-green-600 fill-green-600"/>
+                            <div className="h-1 w-24 bg-gray-300 rounded-full relative">
+                                <div className="absolute top-0 left-0 h-1 w-2/3 bg-green-600 rounded-full"></div>
+                                <div className="absolute -top-0.5 left-2/3 h-2 w-2 bg-green-600 rounded-full"></div>
+                            </div>
+                            <span className="text-xs text-gray-500">{message.audioLabel || '0:00'}</span>
+                        </div>
+                    )}
+                    
+                    {message.text && <p className="text-black whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: message.text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" class="text-blue-600 underline">$1</a>') }} />}
+
                     <div className="flex justify-end items-center gap-1 mt-1 h-3">
                         <span className="text-xs text-gray-400">
                           {message.time || DEFAULT_TIME}
@@ -121,33 +276,53 @@ const WhatsAppLivePreview: React.FC<Props> = ({
   };
 
   return (
-    <div className={cn("aspect-[9/18] h-full max-h-[800px] w-auto max-w-full mx-auto bg-[#0D0D0D] rounded-[40px] border-[10px] border-black overflow-hidden shadow-2xl relative", className)}>
-        {/* Notch */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-black rounded-b-xl z-20"></div>
+    <div className={cn("aspect-[9/18] h-full max-h-[800px] w-auto max-w-full mx-auto bg-[#1c1c1c] rounded-[40px] border-[10px] border-black overflow-hidden shadow-2xl relative flex flex-col", className)}>
+        
+        {!options.hideTop && <StatusBar options={options} />}
+        
+        <ChatHeader header={header} />
 
-        {/* Header */}
-         <header className="absolute top-0 left-0 right-0 z-10 flex items-center p-3 bg-[#075e54] text-white">
-            <Avatar className="h-9 w-9 mr-3 border-2 border-white/50">
-                <AvatarImage src={avatarUrl ?? undefined} alt={contactName} data-ai-hint="person avatar" />
-                <AvatarFallback className="bg-gray-600 text-lg">
-                    {contactName?.charAt(0).toUpperCase()}
-                </AvatarFallback>
-            </Avatar>
-            <div className="flex-1">
-                <h2 className="font-semibold text-base">{contactName}</h2>
-                <p className="text-xs text-white/80">online</p>
-            </div>
-            <div className="flex items-center gap-3 text-white/90">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M3.99 16.51c-1.26-1.57-2-3.48-2-5.51 0-4.42 3.58-8 8-8s8 3.58 8 8-3.58 8-8 8c-1.95 0-3.78-.7-5.24-1.87l-3.76 1.87 1.99-3.49zm8.01-13.51c-5.52 0-10 4.48-10 10 0 2.34.81 4.51 2.16 6.25l-2.16 3.75 3.86-1.93c1.7.99 3.66 1.58 5.75 1.58 5.52 0 10-4.48 10-10s-4.48-10-10-10zm2.5 12.5h-5c-.28 0-.5-.22-.5-.5s.22-.5.5-.5h5c.28 0 .5.22.5.5s-.22.5-.5.5zm0-3h-5c-.28 0-.5-.22-.5-.5s.22-.5.5-.5h5c.28 0 .5.22.5.5s-.22.5-.5.5zm0-3h-5c-.28 0-.5-.22-.5-.5s.22-.5.5-.5h5c.28 0 .5.22.5.5s-.22.5-.5.5z"/></svg>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm1-13h-2v6h2V7zm0 8h-2v-2h2v2z"/></svg>
-            </div>
-        </header>
-
-        {/* Content */}
-        <main className="absolute top-[60px] bottom-0 left-0 right-0 overflow-y-auto">
+        <main className="flex-1 overflow-y-auto mt-[96px]">
           {renderContent()}
         </main>
+        
+        <ChatInput hidden={hideBottom} showKeyboard={options.showKeyboard} />
+
     </div>
   );
 };
 export default React.memo(WhatsAppLivePreview);
+
+export const __TEST_CASES__ = {
+  minimal: {
+    header: { name: 'Cliente Satisfeito' },
+    messages: [
+      { id: '1', sender: 'client' as const, text: 'Olá, recebi meu produto!' },
+      { id: '2', sender: 'me' as const, text: 'Que ótimo! O que achou?' },
+    ],
+  },
+  prankshitLike: {
+    options: {
+        interfaceStyle: 'iphone' as const,
+        phoneTime: '10:04',
+        icons: {
+            networkLabel: '4G' as const,
+            batteryPercent: 50,
+            charging: true,
+            signalBars: 1 as const,
+            wifi: true,
+        }
+    },
+    header: {
+        name: 'Maria Souza',
+        status: 'online',
+        profileUrl: 'https://picsum.photos/seed/maria/200/200'
+    },
+    messages: [
+      { id: '1', sender: 'client' as const, text: 'Oi!' },
+      { id: '2', sender: 'me' as const, kind: 'image' as const, imageUrl: 'https://picsum.photos/seed/chat-img/600/400'},
+      { id: '3', sender: 'client' as const, text: 'Uau! E sobre o link? https://scalify.com' },
+      { id: '4', sender: 'me' as const, kind: 'audio' as const, audioLabel: '0:12'},
+    ],
+  },
+};
