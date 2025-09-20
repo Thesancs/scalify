@@ -101,14 +101,14 @@ export default function ReviewsPage() {
             <Label htmlFor="script">Roteiro da Conversa</Label>
             <Textarea
               id="script"
-              placeholder="Digite a conversa aqui. Ex:
-Cliente: Olá, recebi meu produto!
+              placeholder="Ex:
+Cliente Satisfeito: Olá, recebi meu produto!
 Eu: Que ótimo! O que achou?"
               value={script}
               onChange={(e) => setScript(e.target.value)}
               className="h-48"
             />
-             <p className="text-xs text-muted-foreground">Use "Eu:" para as suas mensagens e o nome do contato para as dele.</p>
+             <p className="text-xs text-muted-foreground">Use "Eu:" para suas mensagens e o nome do contato para as mensagens dele.</p>
           </div>
           <Button onClick={handleGenerate} disabled={isLoading} size="lg" className="w-full">
             {isLoading ? (
