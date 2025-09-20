@@ -37,17 +37,15 @@ const WhatsAppLivePreview: React.FC<Props> = ({
   className,
 }) => {
   const sanitizedMessages = useMemo(() => {
-    const validMessages = messages.filter((msg) => msg.text && msg.text.trim().length > 0);
-    console.log('[WhatsAppLivePreview]', { contactName, messagesLength: validMessages.length });
-    return validMessages;
-  }, [messages, contactName]);
+    return messages.filter((msg) => msg.text && msg.text.trim().length > 0);
+  }, [messages]);
 
   const renderContent = () => {
     if (loading) {
       return (
         <div className="flex flex-col items-center justify-center h-full text-muted-foreground bg-black/20">
           <Loader2 className="h-12 w-12 animate-spin text-primary" />
-          <p className="mt-4 text-sm">Atualizando preview...</p>
+          <p className="mt-4 text-sm">Gerando imagem...</p>
         </div>
       );
     }
@@ -56,7 +54,7 @@ const WhatsAppLivePreview: React.FC<Props> = ({
       return (
         <div className="flex flex-col items-center justify-center h-full text-center text-red-400 bg-red-500/10 p-4">
           <ImageIcon className="h-12 w-12" />
-          <h3 className="mt-4 font-semibold">Erro no Preview</h3>
+          <h3 className="mt-4 font-semibold">Erro ao Gerar Imagem</h3>
           <p className="mt-1 text-sm text-red-400/80">{error}</p>
         </div>
       );
@@ -152,4 +150,4 @@ const WhatsAppLivePreview: React.FC<Props> = ({
     </div>
   );
 };
-export default WhatsAppLivePreview;
+export default React.memo(WhatsAppLivePreview);
