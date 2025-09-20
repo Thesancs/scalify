@@ -9,6 +9,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
+import { ArrowRight, BarChart2, Ticket, TrendingUp, Star, Library } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -88,7 +90,7 @@ export default function OfertasPage() {
           Catálogo de Ofertas
         </h1>
         <p className="text-muted-foreground">
-          Encontre e filtre as melhores oportunidades para escalar.
+          Encontre e priorize o que vale testar agora.
         </p>
       </div>
 
@@ -139,8 +141,8 @@ export default function OfertasPage() {
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {ofertasEscaladas.map((oferta) => (
-          <Link href={`/dashboard/ofertas/${oferta.id}`} key={oferta.id}>
-            <Card className="flex flex-col h-full rounded-2xl glassmorphic transition-all duration-300 hover:scale-[1.02] hover:border-primary overflow-hidden cursor-pointer">
+          <Card key={oferta.id} className="flex flex-col h-full rounded-2xl glassmorphic transition-all duration-300 hover:scale-[1.02] hover:border-primary overflow-hidden group">
+            <Link href={`/dashboard/ofertas/${oferta.id}`} className="flex flex-col flex-grow">
               <div className="relative w-full aspect-video">
                 <Image
                   src={oferta.imageUrl}
@@ -154,34 +156,8 @@ export default function OfertasPage() {
                         Score: {oferta.score}
                     </Badge>
                 </div>
-              </div>
-              <CardHeader>
-                <CardTitle className="text-lg font-bold text-foreground">
-                  {oferta.title}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="flex-grow space-y-3">
-                <div className="flex flex-wrap gap-2">
-                  <Badge variant="secondary">{oferta.type}</Badge>
-                  <Badge variant="outline" className="border-primary/50 text-primary">{oferta.format}</Badge>
-                </div>
-                <div className="space-y-1 text-sm text-muted-foreground">
-                  <div className="flex items-center justify-between">
-                    <span>Anúncios Ativos:</span>
-                    <span className="font-bold text-foreground">{oferta.ads}</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span>ROAS:</span>
-                    <span className="font-bold text-foreground">{oferta.roas}x</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span>Ticket Médio:</span>
-                    <span className="font-bold text-foreground">R${oferta.ticket}</span>
-                  </div>
-                </div>
-              </CardContent>
-               <CardFooter>
-                 <Badge
+                <div className="absolute bottom-2 left-2 right-2">
+                   <Badge
                     variant={
                       oferta.status === 'escalando' ? 'default'
                       : oferta.status === 'estável' ? 'secondary'
@@ -195,9 +171,49 @@ export default function OfertasPage() {
                   >
                     {oferta.status}
                   </Badge>
-              </CardFooter>
-            </Card>
-          </Link>
+                </div>
+              </div>
+              <CardHeader>
+                <CardTitle className="text-lg font-bold text-foreground">
+                  {oferta.title}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="flex-grow space-y-3">
+                <div className="flex flex-wrap gap-2">
+                  <Badge variant="secondary">{oferta.type}</Badge>
+                  <Badge variant="outline" className="border-primary/50 text-primary">{oferta.format}</Badge>
+                </div>
+                <div className="space-y-2 text-sm text-muted-foreground pt-2">
+                  <div className="flex items-center justify-between">
+                    <span className='flex items-center gap-2'><BarChart2 className="h-4 w-4"/> Anúncios Ativos:</span>
+                    <span className="font-bold text-foreground">{oferta.ads}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className='flex items-center gap-2'><TrendingUp className="h-4 w-4"/> ROAS:</span>
+                    <span className="font-bold text-foreground">{oferta.roas}x</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className='flex items-center gap-2'><Ticket className="h-4 w-4"/> Ticket Médio:</span>
+                    <span className="font-bold text-foreground">R${oferta.ticket}</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Link>
+            <CardFooter className="p-2 border-t border-white/10 mt-auto">
+              <div className="grid grid-cols-2 gap-2 w-full">
+                <Button variant="ghost" size="sm">
+                  <Star className="mr-2 h-4 w-4" />
+                  Salvar
+                </Button>
+                <Button variant="ghost" size="sm" asChild>
+                  <Link href={`/dashboard/ofertas/${oferta.id}`}>
+                    Ver Detalhes
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+              </div>
+            </CardFooter>
+          </Card>
         ))}
       </div>
     </div>
