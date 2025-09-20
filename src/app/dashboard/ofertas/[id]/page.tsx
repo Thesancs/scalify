@@ -20,7 +20,7 @@ const ofertasEscaladas = [
     ticket: 297,
     status: 'escalando',
     score: 'Alto',
-    descricao: 'Descubra o método que está revolucionando o mercado digital. Uma estratégia de vendas rápida e eficaz para alavancar seus resultados em tempo recorde.'
+    porque: 'Alto volume de novos criativos e expansão para outros mercados. O momento de testar é agora.'
   },
   {
     id: '2',
@@ -32,7 +32,7 @@ const ofertasEscaladas = [
     ticket: 467,
     status: 'escalando',
     score: 'Alto',
-    descricao: 'A fórmula inovadora que atua diretamente na queima de gordura localizada. Um produto com alta conversão e ticket elevado, ideal para escalar suas campanhas.'
+    porque: 'Sinais de saturação no público principal, mas com bom ROAS. Vale o teste em um novo ângulo.'
   },
   {
     id: '3',
@@ -44,7 +44,7 @@ const ofertasEscaladas = [
     ticket: 30,
     status: 'queda',
     score: 'Baixo',
-    descricao: 'Um e-book completo com 100 receitas para quem busca uma alimentação saudável e rica em proteínas. Perfeito para nichos de fitness e bem-estar.'
+    porque: 'Apesar da queda, o ticket baixo pode ser uma barreira de entrada menor para novos públicos.'
   },
    {
     id: '4',
@@ -56,7 +56,7 @@ const ofertasEscaladas = [
     ticket: 997,
     status: 'escalando',
     score: 'Médio',
-    descricao: 'Solução B2B com ticket alto e demanda crescente. Pouca concorrência e alto potencial de escala no Brasil.'
+    porque: 'Solução B2B com ticket alto e demanda crescente. Pouca concorrência e alto potencial de escala no Brasil.'
   },
   {
     id: '5',
@@ -68,7 +68,7 @@ const ofertasEscaladas = [
     ticket: 197,
     status: 'estável',
     score: 'Médio',
-    descricao: 'Kit com produtos de beleza naturais, com foco em sustentabilidade e bem-estar. Mercado em alta com público fiel.'
+    porque: 'Mercado em alta com público fiel e baixa concorrência em anúncios de vídeo.'
   },
 ];
 
@@ -95,13 +95,30 @@ export default function OfertaPage({ params }: { params: { id: string } }) {
         </Link>
         
         <div className="flex flex-col gap-8">
+            {/* Hero Validado */}
             <Card className="rounded-2xl glassmorphic border-0">
                 <CardHeader>
-                    <div className="flex flex-wrap items-center gap-4 mb-4">
+                    <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
                         <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground flex-1">{oferta.title}</h1>
-                        <Badge variant="secondary" className="bg-black/50 text-white backdrop-blur-sm text-base">
-                            Score de Escala: {oferta.score}
-                        </Badge>
+                        <div className='flex flex-col items-end gap-2'>
+                          <Badge variant="secondary" className="bg-black/50 text-white backdrop-blur-sm text-base">
+                              Score de Escala: {oferta.score}
+                          </Badge>
+                           <Badge
+                              variant={
+                                oferta.status === 'escalando' ? 'default'
+                                : oferta.status === 'estável' ? 'secondary'
+                                : 'destructive'
+                              }
+                              className={`capitalize ${
+                                  oferta.status === 'escalando' ? 'bg-green-500/20 text-green-400 border-green-500/30' : 
+                                  oferta.status === 'estável' ? 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' : 
+                                  'bg-red-500/20 text-red-400 border-red-500/30'
+                              }`}
+                            >
+                              {oferta.status}
+                            </Badge>
+                        </div>
                     </div>
                     <div className="flex flex-wrap gap-2">
                         <Badge variant="secondary" className="text-sm">{oferta.type}</Badge>
@@ -109,42 +126,50 @@ export default function OfertaPage({ params }: { params: { id: string } }) {
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <div className="mt-4 mb-8">
-                        <p className="text-muted-foreground leading-relaxed">{oferta.descricao}</p>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-6">
-                        <Card className="glassmorphic">
-                            <CardHeader>
-                                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2"><BarChart2 className="h-4 w-4"/> Anúncios Ativos</CardTitle>
-                                <CardDescription className="text-xs">Indicador de verba e tração.</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-3xl font-bold text-foreground">{oferta.ads}</p>
-                            </CardContent>
-                        </Card>
-                         <Card className="glassmorphic">
-                            <CardHeader>
-                                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2"><TrendingUp className="h-4 w-4"/> ROAS Observado</CardTitle>
-                                <CardDescription className="text-xs">Referência de eficiência — não é garantia.</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-3xl font-bold text-foreground">{oferta.roas}x</p>
-                            </CardContent>
-                        </Card>
-                         <Card className="glassmorphic">
-                            <CardHeader>
-                                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2"><Ticket className="h-4 w-4"/> Ticket Médio</CardTitle>
-                                <CardDescription className="text-xs">Preço praticado recentemente.</CardDescription>
-                            </CardHeader>
-                             <CardContent>
-                                <p className="text-3xl font-bold text-foreground">R${oferta.ticket}</p>
-                            </CardContent>
-                        </Card>
+                    <div className="mt-4">
+                      <h4 className="font-semibold text-foreground mb-1">Por que agora?</h4>
+                      <p className="text-muted-foreground leading-relaxed">{oferta.porque}</p>
                     </div>
                 </CardContent>
             </Card>
 
+            {/* Metricas Chave */}
+            <Card className="rounded-2xl glassmorphic border-0">
+                <CardHeader>
+                    <CardTitle>Métricas-Chave</CardTitle>
+                </CardHeader>
+                <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <Card className="glassmorphic">
+                        <CardHeader>
+                            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2"><BarChart2 className="h-4 w-4"/> Anúncios Ativos</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <p className="text-3xl font-bold text-foreground">{oferta.ads}</p>
+                            <CardDescription className="text-xs mt-1">Sinal de verba e tração.</CardDescription>
+                        </CardContent>
+                    </Card>
+                     <Card className="glassmorphic">
+                        <CardHeader>
+                            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2"><TrendingUp className="h-4 w-4"/> ROAS Observado</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <p className="text-3xl font-bold text-foreground">{oferta.roas}x</p>
+                            <CardDescription className="text-xs mt-1">Referência de eficiência — não é garantia.</CardDescription>
+                        </CardContent>
+                    </Card>
+                     <Card className="glassmorphic">
+                        <CardHeader>
+                            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2"><Ticket className="h-4 w-4"/> Ticket Médio</CardTitle>
+                        </CardHeader>
+                         <CardContent>
+                            <p className="text-3xl font-bold text-foreground">R${oferta.ticket}</p>
+                            <CardDescription className="text-xs mt-1">Preço de entrada observado.</CardDescription>
+                        </CardContent>
+                    </Card>
+                </CardContent>
+            </Card>
+            
+            {/* Ações Rápidas */}
             <Card className="rounded-2xl glassmorphic border-0">
                 <CardHeader>
                     <CardTitle>Ações Rápidas</CardTitle>
