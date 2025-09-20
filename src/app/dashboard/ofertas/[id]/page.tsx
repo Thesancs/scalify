@@ -7,6 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, BarChart2, Library, Star, Ticket, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import Image from 'next/image';
 
 // Mock data
 const ofertasEscaladas = [
@@ -20,7 +21,9 @@ const ofertasEscaladas = [
     ticket: 297,
     status: 'escalando',
     score: 'Alto',
-    porque: 'Alto volume de novos criativos e expansão para outros mercados. O momento de testar é agora.'
+    porque: 'Alto volume de novos criativos e expansão para outros mercados. O momento de testar é agora.',
+    imageUrl: 'https://picsum.photos/seed/oferta-1/600/400',
+    imageHint: 'abstract technology',
   },
   {
     id: '2',
@@ -32,7 +35,9 @@ const ofertasEscaladas = [
     ticket: 467,
     status: 'escalando',
     score: 'Alto',
-    porque: 'Sinais de saturação no público principal, mas com bom ROAS. Vale o teste em um novo ângulo.'
+    porque: 'Sinais de saturação no público principal, mas com bom ROAS. Vale o teste em um novo ângulo.',
+    imageUrl: 'https://picsum.photos/seed/oferta-2/600/400',
+    imageHint: 'health science',
   },
   {
     id: '3',
@@ -44,7 +49,9 @@ const ofertasEscaladas = [
     ticket: 30,
     status: 'queda',
     score: 'Baixo',
-    porque: 'Apesar da queda, o ticket baixo pode ser uma barreira de entrada menor para novos públicos.'
+    porque: 'Apesar da queda, o ticket baixo pode ser uma barreira de entrada menor para novos públicos.',
+    imageUrl: 'https://picsum.photos/seed/oferta-3/600/400',
+    imageHint: 'healthy food',
   },
    {
     id: '4',
@@ -56,7 +63,9 @@ const ofertasEscaladas = [
     ticket: 997,
     status: 'escalando',
     score: 'Médio',
-    porque: 'Solução B2B com ticket alto e demanda crescente. Pouca concorrência e alto potencial de escala no Brasil.'
+    porque: 'Solução B2B com ticket alto e demanda crescente. Pouca concorrência e alto potencial de escala no Brasil.',
+    imageUrl: 'https://picsum.photos/seed/oferta-4/600/400',
+    imageHint: 'software interface',
   },
   {
     id: '5',
@@ -68,7 +77,9 @@ const ofertasEscaladas = [
     ticket: 197,
     status: 'estável',
     score: 'Médio',
-    porque: 'Mercado em alta com público fiel e baixa concorrência em anúncios de vídeo.'
+    porque: 'Mercado em alta com público fiel e baixa concorrência em anúncios de vídeo.',
+    imageUrl: 'https://picsum.photos/seed/oferta-5/600/400',
+    imageHint: 'cosmetics beauty',
   },
 ];
 
@@ -96,7 +107,18 @@ export default function OfertaPage({ params }: { params: { id: string } }) {
         
         <div className="flex flex-col gap-8">
             {/* Hero Validado */}
-            <Card className="rounded-2xl glassmorphic border-0">
+            <Card className="rounded-2xl glassmorphic border-0 overflow-hidden">
+                {oferta.imageUrl && (
+                    <div className="relative w-full aspect-video">
+                        <Image
+                            src={oferta.imageUrl}
+                            alt={`Banner da oferta ${oferta.title}`}
+                            fill
+                            className="object-cover"
+                            data-ai-hint={oferta.imageHint}
+                        />
+                    </div>
+                )}
                 <CardHeader>
                     <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
                         <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground flex-1">{oferta.title}</h1>
