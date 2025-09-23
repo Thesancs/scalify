@@ -13,12 +13,13 @@ import {
 } from '@/components/ui/dropdown-menu';
 import Link from 'next/link';
 import Image from 'next/image';
+import { SidebarTrigger } from '@/components/ui/sidebar';
 
 export function AppHeader() {
   return (
     <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center justify-between border-b border-white/10 bg-black/30 px-4 backdrop-blur-lg md:px-6">
       <div className="flex items-center gap-4">
-        {/* O gatilho da barra lateral foi removido */}
+        <SidebarTrigger className="md:hidden" />
       </div>
 
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
