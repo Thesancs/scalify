@@ -39,7 +39,7 @@ export function AppSidebar() {
   };
 
   return (
-    <Sidebar className="border-r border-white/10 bg-black/40 backdrop-blur-xl" collapsible="icon">
+    <Sidebar className="border-r border-white/10 bg-black/30 backdrop-blur-lg" collapsible="icon">
       <SidebarContent className='pt-6'>
         <SidebarMenu>
           {menuItems.map((item, index) => (
@@ -49,7 +49,7 @@ export function AppSidebar() {
                 <SidebarMenuButton
                   asChild
                   size="lg"
-                  className="group h-auto gap-3 py-3 px-4 text-base transition-all duration-300 hover:bg-white/10 data-[active=true]:bg-white/15 data-[active=true]:text-primary"
+                  className="group h-auto gap-3 py-3 px-4 text-base transition-all duration-300 hover:bg-white/10 data-[active=true]:bg-primary/20 data-[active=true]:text-primary"
                   isActive={pathname.startsWith(item.href) && (item.href !== '/dashboard' || pathname === '/dashboard')}
                   tooltip={item.label}
                   onClick={handleLinkClick}
