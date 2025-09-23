@@ -12,7 +12,6 @@ import {
 } from 'lucide-react';
 import {
   SidebarContent,
-  SidebarHeader,
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
@@ -41,32 +40,7 @@ export function AppSidebar() {
 
   return (
     <Sidebar className="border-r border-white/10 bg-black/40 backdrop-blur-xl" collapsible="icon">
-      <SidebarHeader>
-        <Link
-          href="/dashboard"
-          className="flex items-center gap-2.5"
-          onClick={handleLinkClick}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="h-8 w-8 text-primary"
-          >
-            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
-          </svg>
-          <div className="flex flex-col">
-            <span className="text-xl font-bold tracking-tight text-foreground">
-              Scalify
-            </span>
-          </div>
-        </Link>
-      </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className='pt-6'>
         <SidebarMenu>
           {menuItems.map((item, index) => (
             <React.Fragment key={item.label}>
