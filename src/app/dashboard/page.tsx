@@ -63,7 +63,10 @@ const validadas48h = [
       hint: 'person'
     },
   },
-  {
+];
+
+const tendenciasComunidade = [
+    {
     id: '3',
     title: '100 Receitas Ricas em Proteínas',
     veredicto: 'Evite',
@@ -99,7 +102,26 @@ const validadas48h = [
       hint: 'person'
     },
   },
+  {
+    id: '6',
+    title: 'Curso de Design UI/UX',
+    veredicto: 'Priorize',
+    veredictoColor: 'bg-green-500/20 text-green-400 border-green-500/30',
+    porque:
+      'Demanda crescente por profissionais de UX, com poucos players consolidados no nicho de VSL.',
+    sinais: {
+      anuncios: '250+',
+      tendencia: 'Alta',
+      ticket: 'R$697',
+    },
+    minerador: {
+      nome: 'Pedro A.',
+      avatarUrl: 'https://picsum.photos/seed/pedro/40/40',
+      hint: 'person'
+    },
+  },
 ];
+
 
 const recomendacaoEspecialista = {
   id: '4',
@@ -196,6 +218,69 @@ export default function DashboardPage() {
               ))}
             </div>
           </div>
+          
+           {/* Nova Seção: Tendências da Comunidade */}
+          <div>
+            <h2 className="text-2xl font-bold tracking-tight text-foreground mb-1">
+              Tendências da Comunidade
+            </h2>
+            <p className="text-muted-foreground mb-4 max-w-3xl">
+              Ofertas que estão ganhando tração e sendo discutidas pela comunidade.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {tendenciasComunidade.map((oferta) => (
+                <Card
+                  key={oferta.id}
+                  className="flex flex-col h-full rounded-2xl glassmorphic transition-all duration-300 hover:border-primary/80 overflow-hidden group"
+                >
+                  <CardHeader>
+                    <div className="flex justify-between items-start">
+                       <Badge variant="secondary" className="flex items-center gap-2 bg-black/50 text-white backdrop-blur-sm">
+                        <TrendingUp className="h-4 w-4 text-primary" />
+                        Em Alta na Comunidade
+                      </Badge>
+                       <Badge className={oferta.veredictoColor}>
+                        {oferta.veredicto}
+                      </Badge>
+                    </div>
+                     <CardTitle className="text-xl font-bold text-foreground pt-4">{oferta.title}</CardTitle>
+                  </CardHeader>
+
+                  <CardContent className="flex-grow space-y-4">
+                     <div className="space-y-2 text-sm text-muted-foreground">
+                          <div className="flex items-center justify-between" title="Indicador de verba e tração">
+                              <span className="flex items-center gap-2"><Flame className="h-4 w-4" /> Anúncios ativos:</span>
+                              <span className="font-bold text-foreground">{oferta.sinais.anuncios}</span>
+                          </div>
+                          <div className="flex items-center justify-between" title="Tendência dos últimos 7 dias">
+                              <span className="flex items-center gap-2"><TrendingUp className="h-4 w-4" /> Tendência 7d:</span>
+                              <span className="font-bold text-foreground">{oferta.sinais.tendencia}</span>
+                          </div>
+                          <div className="flex items-center justify-between" title="Preço praticado recentemente">
+                              <span className="flex items-center gap-2"><Ticket className="h-4 w-4"/> Ticket médio:</span>
+                              <span className="font-bold text-foreground">{oferta.sinais.ticket}</span>
+                          </div>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-sm text-foreground mb-1">Por que agora?</h4>
+                        <p className="text-sm text-muted-foreground leading-relaxed">{oferta.porque}</p>
+                      </div>
+                  </CardContent>
+
+                  <CardFooter className="grid grid-cols-2 gap-2">
+                     <Button asChild className="w-full">
+                          <Link href={`/dashboard/ofertas/${oferta.id}`}>Ver Detalhes</Link>
+                      </Button>
+                      <Button variant="outline" className="w-full">
+                          <Star className="mr-2 h-4 w-4" />
+                          Salvar
+                      </Button>
+                  </CardFooter>
+                </Card>
+              ))}
+            </div>
+          </div>
+
         </div>
 
         {/* Coluna Lateral */}
@@ -264,3 +349,5 @@ export default function DashboardPage() {
     </div>
   );
 }
+
+    
