@@ -14,23 +14,32 @@ import {
 import Link from 'next/link';
 import Image from 'next/image';
 import { SidebarTrigger } from '@/components/ui/sidebar';
+import { useSidebar } from '@/components/ui/sidebar';
+
 
 export function AppHeader() {
+  const { state } = useSidebar();
+  
   return (
     <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center justify-between border-b border-white/10 bg-black/30 px-4 backdrop-blur-lg md:px-6">
       <div className="flex items-center gap-4">
         <SidebarTrigger className="md:hidden" />
+        {state === 'collapsed' && (
+            <Link href="/dashboard">
+                <Image
+                    src="/Scalify__1_-removebg-preview.png"
+                    alt="Scalify Logo"
+                    width={120}
+                    height={40}
+                    className="hidden md:block"
+                />
+            </Link>
+        )}
       </div>
 
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
         <Link href="/dashboard" className="flex items-center gap-2.5">
-          <Image
-            src="/Scalify__1_-removebg-preview.png"
-            alt="Scalify Logo"
-            width={160}
-            height={53}
-            className="h-12 w-auto"
-          />
+          {/* Logo foi movido para a sidebar */}
         </Link>
       </div>
 
