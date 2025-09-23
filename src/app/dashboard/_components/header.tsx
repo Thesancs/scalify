@@ -15,6 +15,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { useSidebar } from '@/components/ui/sidebar';
+import { cn } from '@/lib/utils';
 
 
 export function AppHeader() {
@@ -24,17 +25,16 @@ export function AppHeader() {
     <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center justify-between border-b border-white/10 bg-black/30 px-4 backdrop-blur-lg md:px-6">
       <div className="flex items-center gap-4">
         <SidebarTrigger className="md:hidden" />
-        {state === 'collapsed' && (
+         <div className={cn("hidden md:block transition-opacity duration-200", state === 'expanded' ? 'opacity-0' : 'opacity-100')}>
             <Link href="/dashboard">
                 <Image
                     src="/Scalify__1_-removebg-preview.png"
                     alt="Scalify Logo"
                     width={120}
                     height={40}
-                    className="hidden md:block"
                 />
             </Link>
-        )}
+        </div>
       </div>
 
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
