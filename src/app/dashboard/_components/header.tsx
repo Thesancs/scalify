@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export function AppHeader() {
   return (
@@ -25,23 +26,13 @@ export function AppHeader() {
 
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
         <Link href="/dashboard" className="flex items-center gap-2.5">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="h-8 w-8 text-primary"
-          >
-            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
-          </svg>
-          <div className="hidden flex-col md:flex">
-            <span className="text-xl font-bold tracking-tight text-foreground">
-              Scalify
-            </span>
-          </div>
+          <Image
+            src="/Scalify__1_-removebg-preview.png"
+            alt="Scalify Logo"
+            width={120}
+            height={40}
+            className="h-10 w-auto"
+          />
         </Link>
       </div>
 
