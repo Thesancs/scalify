@@ -80,7 +80,9 @@
   }
   body {
     @apply bg-background text-foreground;
-    background-image: linear-gradient(to bottom, hsl(var(--background)), hsl(0, 0%, 0%));
+    background-image: 
+      radial-gradient(ellipse 80% 50% at 50% 115%, hsla(var(--primary), 0.15), transparent),
+      linear-gradient(to bottom, hsl(var(--background)), hsl(0, 0%, 0%));
   }
 }
 
