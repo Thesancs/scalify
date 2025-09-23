@@ -63,6 +63,42 @@ const validadas48h = [
       hint: 'person'
     },
   },
+  {
+    id: '3',
+    title: '100 Receitas Ricas em Proteínas',
+    veredicto: 'Evite',
+    veredictoColor: 'bg-red-500/20 text-red-400 border-red-500/30',
+    porque:
+      'Apesar da queda, o ticket baixo pode ser uma barreira de entrada menor para novos públicos.',
+    sinais: {
+      anuncios: '140',
+      tendencia: 'Queda',
+      ticket: 'R$30',
+    },
+    minerador: {
+      nome: 'Lucas T.',
+      avatarUrl: 'https://picsum.photos/seed/lucas/40/40',
+      hint: 'person'
+    },
+  },
+  {
+    id: '5',
+    title: 'Kit de Beleza Natural',
+    veredicto: 'Teste',
+    veredictoColor: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
+    porque:
+      'Mercado em alta com público fiel e baixa concorrência em anúncios de vídeo. Bom para testar.',
+    sinais: {
+      anuncios: '95',
+      tendencia: 'Estável',
+      ticket: 'R$197',
+    },
+    minerador: {
+      nome: 'Sofia L.',
+      avatarUrl: 'https://picsum.photos/seed/sofia/40/40',
+      hint: 'person'
+    },
+  },
 ];
 
 const recomendacaoEspecialista = {
