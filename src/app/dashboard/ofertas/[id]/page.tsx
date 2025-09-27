@@ -1,13 +1,16 @@
+
 'use client';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, BarChart2, Library, Star, Ticket, TrendingUp } from 'lucide-react';
+import { ArrowLeft, BarChart2, Library, Star, Ticket, TrendingUp, ExternalLink, ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
+import { useState } from 'react';
+import { cn } from '@/lib/utils';
 
 // Mock data
 const ofertasEscaladas = [
@@ -86,15 +89,17 @@ const ofertasEscaladas = [
 export default function OfertaPage({ params }: { params: { id: string } }) {
   const { toast } = useToast();
   const oferta = ofertasEscaladas.find((o) => o.id === params.id);
+  const [isWatchlisted, setIsWatchlisted] = useState(false);
 
   if (!oferta) {
     notFound();
   }
   
-  const handleSaveToWatchlist = () => {
+  const handleWatchlistToggle = () => {
+    setIsWatchlisted(!isWatchlisted);
     toast({
-        title: 'Oferta Salva!',
-        description: `"${oferta.title}" foi adicionada à sua Watchlist. Vamos avisar se algo mudar.`,
+        title: !isWatchlisted ? 'Oferta Salva!' : 'Oferta Removida!',
+        description: `"${oferta.title}" foi ${!isWatchlisted ? 'adicionada à' : 'removida da'} sua Watchlist.`,
     })
   };
 
@@ -121,7 +126,12 @@ export default function OfertaPage({ params }: { params: { id: string } }) {
                 )}
                 <CardHeader>
                     <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
-                        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground flex-1">{oferta.title}</h1>
+                        <div className='flex items-center gap-4'>
+                          <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground">{oferta.title}</h1>
+                          <Button variant="ghost" size="icon" onClick={handleWatchlistToggle} className="text-muted-foreground hover:text-primary">
+                            <Star className={cn("h-7 w-7 transition-all", isWatchlisted && "fill-primary text-primary")} />
+                          </Button>
+                        </div>
                         <div className='flex flex-col items-end gap-2'>
                           <Badge variant="secondary" className="bg-black/50 text-white backdrop-blur-sm text-base">
                               Score de Escala: {oferta.score}
@@ -196,15 +206,23 @@ export default function OfertaPage({ params }: { params: { id: string } }) {
                 <CardHeader>
                     <CardTitle>Ações Rápidas</CardTitle>
                 </CardHeader>
-                <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                     <Button size="lg" className="h-16 text-lg" variant="outline" onClick={handleSaveToWatchlist}>
-                        <Star className="mr-2 h-6 w-6" />
-                        Adicionar à Watchlist
-                    </Button>
+                <CardContent className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                      <Button size="lg" className="h-16 text-lg" asChild>
                         <Link href={`/anuncios/${oferta.id}`}>
                            <Library className="mr-2 h-6 w-6" />
                            Ver Anúncios
+                        </Link>
+                    </Button>
+                    <Button size="lg" className="h-16 text-lg" variant="outline" asChild>
+                        <Link href="#">
+                           <ExternalLink className="mr-2 h-6 w-6" />
+                           Ver Página
+                        </Link>
+                    </Button>
+                     <Button size="lg" className="h-16 text-lg" variant="outline" asChild>
+                        <Link href="#">
+                           <ShoppingCart className="mr-2 h-6 w-6" />
+                           Ver Checkout
                         </Link>
                     </Button>
                 </CardContent>
@@ -213,3 +231,5 @@ export default function OfertaPage({ params }: { params: { id: string } }) {
     </div>
   );
 }
+
+    
