@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Badge } from '@/components/ui/badge';
@@ -290,7 +291,7 @@ export default function DashboardPage() {
                  <h2 className="text-2xl font-bold tracking-tight text-foreground mb-4">
                     Recomendação do Especialista
                  </h2>
-                 <Card className="glassmorphic border-primary/50 border-0">
+                 <Card className="glassmorphic border-0">
                      <CardHeader>
                          <div className="flex justify-between items-center">
                             <CardTitle className="text-xl font-bold">{recomendacaoEspecialista.title}</CardTitle>
