@@ -1,15 +1,6 @@
-// src/components/app-sidebar.tsx
+// src/app/dashboard/_components/sidebar.tsx
 'use client';
 
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar,
-} from '@/components/ui/sidebar';
 import {
   LayoutDashboard,
   Tag,
@@ -17,12 +8,15 @@ import {
   Shield,
   Copy,
   FileCode,
+  ChevronLeft,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import * as React from 'react';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const menuItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -35,85 +29,84 @@ const menuItems = [
 
 export function AppSidebar() {
   const pathname = usePathname();
-  const { state } = useSidebar(); // 'expanded' | 'collapsed'
 
   const isActive = React.useCallback(
-    (href: string) => pathname === href || pathname.startsWith(href + '/'),
+    (href: string) => pathname === href || (href !== '/dashboard' && pathname.startsWith(href)),
     [pathname]
   );
 
   return (
-    <Sidebar
-      collapsible="icon"
-      // Larguras firmes + glassmorphism; funciona com data-[state] do shadcn/ui
-      className={[
-        'glassmorphic border-r border-white/10',
-        'data-[state=expanded]:w-72',
-        'data-[state=collapsed]:w-16',
-        'transition-[width] duration-200 ease-out',
-      ].join(' ')}
-    >
-      <SidebarContent>
-        <SidebarHeader className="h-16 flex items-center justify-center">
-            <Link 
-              href="/dashboard" 
-              className={cn(
-                "outline-none focus-visible:ring-2 focus-visible:ring-primary/50 rounded-lg",
-                "flex items-center transition-all w-full",
-                state === 'expanded' ? "justify-start pl-4" : "justify-center"
-              )}
-            >
-              {/* Logo visível apenas quando expandido */}
-              <div className={cn("transition-opacity duration-200 flex-shrink-0", state === 'collapsed' ? 'opacity-0 w-0 h-0' : 'opacity-100')}>
-                <Image
-                  src="/Scalify__1_-removebg-preview.png"
-                  alt="Scalify Logo"
-                  width={120}
-                  height={40}
-                  priority={false}
-                />
-              </div>
-               {/* Ícone 'S' visível apenas quando colapsado */}
-               <div className={cn("absolute transition-opacity duration-200", state === 'expanded' ? 'opacity-0' : 'opacity-100')}>
-                 <div className="h-9 w-9 bg-white/10 ring-1 ring-white/15 text-white/90 flex items-center justify-center rounded-lg font-bold text-lg">
-                    S
-                 </div>
+    <TooltipProvider delayDuration={0}>
+      <aside
+        className={cn(
+          'hidden md:fixed md:inset-y-0 md:left-0 md:z-20 md:flex md:flex-col',
+          'w-16 hover:w-72 transition-[width] duration-300 ease-in-out',
+          'glassmorphic border-r border-white/10 group'
+        )}
+      >
+        <div className="flex h-full flex-col">
+          {/* Cabeçalho da Sidebar */}
+          <div className="flex h-16 shrink-0 items-center justify-center">
+            <Link href="/dashboard" className="flex items-center justify-center h-full w-full">
+               {/* Logo Completo - aparece no hover */}
+               <div className="w-40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 ease-in-out">
+                 <Image
+                    src="/Scalify__1_-removebg-preview.png"
+                    alt="Scalify Logo"
+                    width={160}
+                    height={45}
+                    priority
+                  />
                </div>
+              {/* Ícone 'S' - visível quando recolhido */}
+              <div className="absolute left-1/2 -translate-x-1/2 opacity-100 group-hover:opacity-0 transition-opacity duration-200">
+                <div className="h-9 w-9 bg-white/10 ring-1 ring-white/15 text-white/90 flex items-center justify-center rounded-lg font-bold text-lg">
+                  S
+                </div>
+              </div>
             </Link>
-        </SidebarHeader>
+          </div>
 
-        <SidebarMenu className="flex-1 px-2">
-          {menuItems.map((item) => {
-            const active = isActive(item.href);
-            const Icon = item.icon;
-            return (
-              <SidebarMenuItem key={item.href}>
-                <SidebarMenuButton
-                  asChild
-                  isActive={active}
-                  tooltip={item.label} // aparece automaticamente no modo ícone
-                  className={[
-                    'justify-start rounded-xl',
-                    'hover:bg-white/10 hover:text-white',
-                    'data-[active=true]:bg-primary/20',
-                    'data-[active=true]:text-primary',
-                    'data-[active=true]:ring-1 data-[active=true]:ring-primary/30',
-                    'transition-colors duration-200',
-                  ].join(' ')}
-                >
-                  <Link
-                    href={item.href}
-                    aria-current={active ? 'page' : undefined}
-                  >
-                    <Icon className="h-5 w-5" />
-                    <span>{item.label}</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            );
-          })}
-        </SidebarMenu>
-      </SidebarContent>
-    </Sidebar>
+          {/* Menu */}
+          <nav className="flex-1 overflow-y-auto overflow-x-hidden px-2 py-4">
+            <ul className="space-y-2">
+              {menuItems.map((item) => {
+                const active = isActive(item.href);
+                const Icon = item.icon;
+                return (
+                  <li key={item.href}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Link
+                          href={item.href}
+                          aria-current={active ? 'page' : undefined}
+                          className={cn(
+                            'flex items-center h-10 w-full rounded-lg text-sm font-medium',
+                            'text-muted-foreground hover:text-foreground hover:bg-white/5',
+                             'transition-colors duration-200',
+                            active && 'bg-primary/20 text-primary ring-1 ring-primary/30',
+                          )}
+                        >
+                          <div className="flex h-10 w-12 shrink-0 items-center justify-center">
+                            <Icon className="h-5 w-5" />
+                          </div>
+                          <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 delay-100 whitespace-nowrap">
+                            {item.label}
+                          </span>
+                        </Link>
+                      </TooltipTrigger>
+                       {/* O Tooltip só aparece quando a sidebar está recolhida */}
+                      <TooltipContent side="right" align="center" className="ml-2 group-hover:hidden">
+                        <p>{item.label}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </li>
+                );
+              })}
+            </ul>
+          </nav>
+        </div>
+      </aside>
+    </TooltipProvider>
   );
 }
