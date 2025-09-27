@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -91,9 +92,18 @@ export default function OfertasPage() {
   const [typeFilter, setTypeFilter] = useState('todos');
   const [formatFilter, setFormatFilter] = useState('todos');
 
+  const normalizeString = (str: string) =>
+    str
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase();
+
   const filteredOfertas = ofertasEscaladas.filter(oferta => {
+    const normalizedSearchTerm = normalizeString(searchTerm);
+    const normalizedTitle = normalizeString(oferta.title);
+
     return (
-      (oferta.title.toLowerCase().includes(searchTerm.toLowerCase())) &&
+      (normalizedTitle.includes(normalizedSearchTerm)) &&
       (statusFilter === 'todos' || oferta.status === statusFilter) &&
       (scoreFilter === 'todos' || oferta.score.toLowerCase() === scoreFilter) &&
       (typeFilter === 'todos' || oferta.type.toLowerCase() === typeFilter) &&
@@ -257,3 +267,5 @@ export default function OfertasPage() {
     </div>
   );
 }
+
+    
