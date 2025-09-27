@@ -23,7 +23,7 @@ export function AppSidebar() {
              {/* Logo Completo - aparece no hover */}
              <div className="w-40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 ease-in-out">
                <Image
-                  src="/Scalify__1_-removebg-preview.png"
+                  src="/Logo Scalify.png"
                   alt="Scalify Logo"
                   width={160}
                   height={45}

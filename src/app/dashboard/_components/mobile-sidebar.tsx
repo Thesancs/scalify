@@ -22,7 +22,7 @@ export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
           <div className="flex h-16 shrink-0 items-center justify-center px-6">
             <Link href="/dashboard" className="flex items-center" onClick={onClose}>
               <Image
-                src="/Scalify__1_-removebg-preview.png"
+                src="/Logo Scalify.png"
                 alt="Scalify Logo"
                 width={160}
                 height={45}
