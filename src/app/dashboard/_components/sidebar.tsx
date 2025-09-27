@@ -21,20 +21,23 @@ export function AppSidebar() {
         <div className="flex h-16 shrink-0 items-center justify-center">
           <Link href="/dashboard" className="flex items-center justify-center h-full w-full">
              {/* Logo Completo - aparece no hover */}
-             <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 ease-in-out">
+             <div className="opacity-0 w-40 group-hover:opacity-100 transition-opacity duration-200 ease-in-out">
                <Image
                   src="/Logo Scalify.png"
                   alt="Scalify Logo"
-                  width={60}
+                  width={140}
                   height={40}
                   priority
                 />
              </div>
             {/* Ícone 'S' - visível quando recolhido */}
             <div className="absolute left-1/2 -translate-x-1/2 opacity-100 group-hover:opacity-0 transition-opacity duration-200">
-              <div className="h-9 w-9 bg-white/10 ring-1 ring-white/15 text-white/90 flex items-center justify-center rounded-lg font-bold text-lg">
-                S
-              </div>
+               <Image
+                  src="/Logo Scalify.png"
+                  alt="Scalify Logo Recolhido"
+                  width={32}
+                  height={32}
+                />
             </div>
           </Link>
         </div>
