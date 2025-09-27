@@ -112,7 +112,7 @@ export default function ReviewsPage() {
             initialState={designerState}
             onChange={setDesignerState}
           />
-          <Card className="glassmorphic border-0">
+          <Card className="glassmorphic">
             <CardHeader>
                 <CardTitle>Exportar Imagem</CardTitle>
                 <CardDescription>
@@ -136,7 +136,7 @@ export default function ReviewsPage() {
             </CardContent>
           </Card>
         </div>
-        <Card className="glassmorphic flex items-center justify-center p-0 lg:p-6 bg-transparent border-0 shadow-none">
+        <Card className="glassmorphic flex items-center justify-center p-0 lg:p-6 bg-transparent shadow-none">
           <WhatsAppLivePreview
             options={designerState.options}
             header={designerState.header}
@@ -151,5 +151,3 @@ export default function ReviewsPage() {
     </div>
   );
 }
-
-    
