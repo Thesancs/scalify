@@ -1,3 +1,4 @@
+
 'use client';
 import React, { useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -317,7 +318,7 @@ const WhatsAppLivePreview: React.FC<WhatsAppLivePreviewProps> = ({
   };
 
   return (
-    <div className={cn("aspect-[9/18] h-full max-h-[800px] w-auto max-w-full mx-auto bg-[#111B21] rounded-[40px] border-[10px] border-black overflow-hidden shadow-2xl relative flex flex-col", className)}>
+    <div className={cn("aspect-[9/16] w-full bg-[#111B21] rounded-[40px] border-[10px] border-black overflow-hidden shadow-2xl relative flex flex-col", className)}>
         
         <StatusBar options={options} />
         

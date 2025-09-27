@@ -57,11 +57,11 @@ export default function ReviewsPage() {
     setIsLoading(true);
 
     try {
-      // A biblioteca html-to-image precisa de um nó DOM, então usamos a referência.
-      const dataUrl = await htmlToImage.toPng(previewRef.current, { 
-          cacheBust: true,
-          // Aumentamos a qualidade da imagem
-          pixelRatio: 2, 
+      const dataUrl = await htmlToImage.toPng(previewRef.current, {
+        cacheBust: true,
+        width: 1080,
+        height: 1920,
+        pixelRatio: 1, // Definimos 1 porque já estamos especificando as dimensões exatas.
       });
 
       const link = document.createElement('a');
@@ -109,15 +109,17 @@ export default function ReviewsPage() {
           />
         </div>
         <div className="flex flex-col items-center gap-4">
-          <Card className="glassmorphic w-full flex items-center justify-center p-0 lg:p-6 bg-transparent shadow-none">
-            {/* Adicionamos a ref aqui para que possamos "fotografar" este componente */}
-            <div ref={previewRef} className="w-full h-full">
-               <WhatsAppLivePreview
-                  options={designerState.options}
-                  header={designerState.header}
-                  messages={finalMessages}
-                  className="w-full h-full"
-                />
+          <Card className="glassmorphic w-full max-w-sm flex items-center justify-center p-4 lg:p-6 bg-transparent shadow-none">
+            {/* 
+              O contêiner `previewRef` agora está dentro de um contêiner com proporção fixa.
+              O `html-to-image` usará a referência DOM, mas forçará a saída para 1080x1920.
+            */}
+            <div ref={previewRef}>
+              <WhatsAppLivePreview
+                options={designerState.options}
+                header={designerState.header}
+                messages={finalMessages}
+              />
             </div>
           </Card>
           
@@ -130,7 +132,7 @@ export default function ReviewsPage() {
             ) : (
               <>
                 <Download className="mr-2 h-5 w-5" />
-                Baixar Imagem (PNG)
+                Baixar Imagem (1080x1920)
               </>
             )}
           </Button>
