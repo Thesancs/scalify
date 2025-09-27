@@ -219,14 +219,6 @@ const WhatsAppLivePreview: React.FC<WhatsAppLivePreviewProps> = ({
     return messages.filter((msg) => (msg.text && msg.text.trim().length > 0) || msg.imageUrl || msg.audioLabel);
   }, [messages]);
 
-  const { interfaceStyle = 'iphone' } = options;
-
-  console.log('[WhatsAppLivePreview] v2', { 
-      contactName: header.name, 
-      messagesLength: sanitizedMessages.length,
-      options,
-  });
-
   const renderContent = () => {
     if (loading) {
       return (
@@ -237,14 +229,6 @@ const WhatsAppLivePreview: React.FC<WhatsAppLivePreviewProps> = ({
       );
     }
     
-    if (generatedImage) {
-        return (
-             <div className="relative w-full h-full">
-                <img src={generatedImage} alt="Generated WhatsApp conversation" className="w-full h-full object-contain" />
-             </div>
-        )
-    }
-
     if (error) {
       return (
         <div className="flex flex-col items-center justify-center h-full text-center text-red-400 bg-red-500/10 p-4">
@@ -255,7 +239,7 @@ const WhatsAppLivePreview: React.FC<WhatsAppLivePreviewProps> = ({
       );
     }
     
-    if (sanitizedMessages.length === 0) {
+    if (sanitizedMessages.length === 0 && !generatedImage) {
         return (
             <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground p-4">
                 <ImageIcon className="h-16 w-16 mb-4" />

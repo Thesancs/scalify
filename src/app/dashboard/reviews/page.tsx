@@ -1,12 +1,12 @@
 
 'use client';
 
-import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { useState, useRef, useCallback } from 'react';
+import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Download, Loader2, Sparkles } from 'lucide-react';
+import { Download, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { generateWhatsappImage } from '@/ai/flows/whatsapp-image-generator';
+import * as htmlToImage from 'html-to-image';
 import WhatsAppLivePreview, {
   type ChatMessage,
 } from '@/components/reviews/WhatsAppLivePreview';
@@ -41,61 +41,45 @@ const initialState: ConversationDesignerState = {
 export default function ReviewsPage() {
   const { toast } = useToast();
   const [designerState, setDesignerState] = useState<ConversationDesignerState>(initialState);
-
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [generatedImage, setGeneratedImage] = useState<string | null>(null);
+  const previewRef = useRef<HTMLDivElement>(null);
 
-  const getChatScript = (messages: ConversationDesignerState['messages'], header: ConversationDesignerState['header']) => {
-    return messages
-      .map((msg) => `${msg.sender === 'me' ? 'Eu' : header.name}: ${msg.text}`)
-      .join('\n');
-  };
-  
-  const handleDownload = () => {
-    if (!generatedImage) return;
-    const link = document.createElement('a');
-    link.href = generatedImage;
-    link.download = `conversa-whatsapp-${designerState.header.name.toLowerCase().replace(/ /g, '-')}.png`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  const handleGenerate = async () => {
-    const script = getChatScript(designerState.messages, designerState.header);
-    if (!designerState.header.name || !script) {
+  const handleDownload = useCallback(async () => {
+    if (!previewRef.current) {
       toast({
         variant: 'destructive',
-        title: 'Campos obrigatórios',
-        description: 'Por favor, preencha o nome do contato e adicione pelo menos uma mensagem.',
+        title: 'Erro',
+        description: 'Não foi possível encontrar a referência da visualização.',
       });
       return;
     }
+
     setIsLoading(true);
-    setError(null);
-    setGeneratedImage(null);
+
     try {
-      const result = await generateWhatsappImage({
-        contactName: designerState.header.name,
-        chatScript: script,
-        profilePictureDataUri: designerState.header.profileUrl || null,
+      // A biblioteca html-to-image precisa de um nó DOM, então usamos a referência.
+      const dataUrl = await htmlToImage.toPng(previewRef.current, { 
+          cacheBust: true,
+          // Aumentamos a qualidade da imagem
+          pixelRatio: 2, 
       });
-      setGeneratedImage(result.imageDataUri);
+
+      const link = document.createElement('a');
+      link.download = `conversa-whatsapp-${designerState.header.name.toLowerCase().replace(/ /g, '-')}.png`;
+      link.href = dataUrl;
+      link.click();
     } catch (error) {
-      console.error(error);
-      const errorMessage = 'Não foi possível gerar a imagem. Tente novamente mais tarde.';
-      setError(errorMessage);
+      console.error('oops, something went wrong!', error);
       toast({
         variant: 'destructive',
         title: 'Erro ao gerar imagem',
-        description: 'Ocorreu um erro inesperado. Verifique o console para mais detalhes.',
+        description: 'Não foi possível converter a visualização em imagem. Tente novamente.',
       });
     } finally {
       setIsLoading(false);
     }
-  };
-  
+  }, [designerState.header.name, toast]);
+
   const finalMessages: ChatMessage[] = designerState.messages.map((m) => ({
     id: m.id,
     sender: m.sender,
@@ -123,38 +107,33 @@ export default function ReviewsPage() {
             initialState={designerState}
             onChange={setDesignerState}
           />
-           <Button onClick={handleGenerate} disabled={isLoading} size="lg" className="w-full text-lg h-14">
-              {isLoading ? (
-              <>
-                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                  Gerando Imagem...
-              </>
-              ) : (
-              <>
-                  <Sparkles className="mr-2 h-5 w-5" />
-                  Gerar Imagem
-              </>
-              )}
-          </Button>
         </div>
         <div className="flex flex-col items-center gap-4">
-            <Card className="glassmorphic w-full flex items-center justify-center p-0 lg:p-6 bg-transparent shadow-none">
-                <WhatsAppLivePreview
-                    options={designerState.options}
-                    header={designerState.header}
-                    messages={finalMessages}
-                    loading={isLoading}
-                    error={error}
-                    generatedImage={generatedImage}
-                    className="w-full h-full"
+          <Card className="glassmorphic w-full flex items-center justify-center p-0 lg:p-6 bg-transparent shadow-none">
+            {/* Adicionamos a ref aqui para que possamos "fotografar" este componente */}
+            <div ref={previewRef} className="w-full h-full">
+               <WhatsAppLivePreview
+                  options={designerState.options}
+                  header={designerState.header}
+                  messages={finalMessages}
+                  className="w-full h-full"
                 />
-            </Card>
-            {generatedImage && !isLoading && !error && (
-                <Button onClick={handleDownload} size="lg" className="w-full max-w-sm text-lg h-14">
-                    <Download className="mr-2 h-5 w-5" />
-                    Baixar Imagem (PNG)
-                </Button>
+            </div>
+          </Card>
+          
+          <Button onClick={handleDownload} disabled={isLoading} size="lg" className="w-full max-w-sm text-lg h-14">
+            {isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                Preparando Download...
+              </>
+            ) : (
+              <>
+                <Download className="mr-2 h-5 w-5" />
+                Baixar Imagem (PNG)
+              </>
             )}
+          </Button>
         </div>
       </div>
     </div>
