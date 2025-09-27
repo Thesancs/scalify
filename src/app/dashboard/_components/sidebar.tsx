@@ -54,16 +54,17 @@ export function AppSidebar() {
       ].join(' ')}
     >
       <SidebarContent>
-        <SidebarHeader className="h-16 items-center justify-center">
+        <SidebarHeader className="h-16 flex items-center justify-center">
             <Link 
               href="/dashboard" 
               className={cn(
                 "outline-none focus-visible:ring-2 focus-visible:ring-primary/50 rounded-lg",
-                "flex items-center justify-center transition-all",
-                state === 'collapsed' && "h-9 w-9 bg-white/10 ring-1 ring-white/15 text-white/90"
+                "flex items-center transition-all w-full",
+                state === 'expanded' ? "justify-start pl-4" : "justify-center"
               )}
             >
-              <div className={cn("transition-opacity duration-200", state === 'collapsed' ? 'opacity-0 w-0 h-0' : 'opacity-100')}>
+              {/* Logo visível apenas quando expandido */}
+              <div className={cn("transition-opacity duration-200 flex-shrink-0", state === 'collapsed' ? 'opacity-0 w-0 h-0' : 'opacity-100')}>
                 <Image
                   src="/Scalify__1_-removebg-preview.png"
                   alt="Scalify Logo"
@@ -72,9 +73,12 @@ export function AppSidebar() {
                   priority={false}
                 />
               </div>
-               <span className={cn("absolute transition-opacity duration-200", state === 'expanded' ? 'opacity-0' : 'opacity-100')}>
-                 S
-               </span>
+               {/* Ícone 'S' visível apenas quando colapsado */}
+               <div className={cn("absolute transition-opacity duration-200", state === 'expanded' ? 'opacity-0' : 'opacity-100')}>
+                 <div className="h-9 w-9 bg-white/10 ring-1 ring-white/15 text-white/90 flex items-center justify-center rounded-lg font-bold text-lg">
+                    S
+                 </div>
+               </div>
             </Link>
         </SidebarHeader>
 
@@ -94,13 +98,12 @@ export function AppSidebar() {
                     'data-[active=true]:bg-primary/20',
                     'data-[active=true]:text-primary',
                     'data-[active=true]:ring-1 data-[active=true]:ring-primary/30',
-                    'transition-[opacity,transform] duration-200',
+                    'transition-colors duration-200',
                   ].join(' ')}
                 >
                   <Link
                     href={item.href}
                     aria-current={active ? 'page' : undefined}
-                    onClick={() => console.log('[Sidebar] navigate ->', item.href)}
                   >
                     <Icon className="h-5 w-5" />
                     <span>{item.label}</span>
