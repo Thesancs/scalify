@@ -110,7 +110,7 @@ const StatusBar = ({ options }: { options: StatusBarOptions }) => {
 
   if (interfaceStyle === 'android') {
     return (
-      <div className="absolute top-0 left-0 right-0 h-8 px-4 flex items-center justify-end gap-2 text-white/90 bg-black/20 z-20">
+      <div className="absolute top-0 left-0 right-0 h-8 px-4 flex items-center justify-end gap-2 text-white/90 bg-[#111B21] z-20">
         {airplane && <Plane size={16} />}
         {!airplane && (
           <>
@@ -155,16 +155,18 @@ const StatusBar = ({ options }: { options: StatusBarOptions }) => {
 
 
 const ChatHeader = ({ header, options }: { header: ChatHeaderOptions, options: StatusBarOptions }) => {
+    const isAndroid = options.interfaceStyle === 'android';
     return (
         <header className={cn(
-            "absolute top-0 left-0 right-0 z-10 flex items-center p-2.5 bg-[#005E54] text-white",
-            options.hideTop ? 'pt-4' : 'pt-11'
+            "absolute top-0 left-0 right-0 z-10 flex items-center p-2.5 text-white",
+            isAndroid ? 'bg-[#111B21]' : 'bg-[#005E54]',
+            options.hideTop ? 'pt-4' : (isAndroid ? 'pt-10' : 'pt-11')
         )}>
-            {options.showBackArrow && <ArrowLeft size={24} className="mr-2" />}
-            <Avatar className="h-10 w-10 mr-3 border-2 border-white/50">
+            {isAndroid || options.showBackArrow ? <ArrowLeft size={24} className="mr-2" /> : null}
+            <Avatar className="h-10 w-10 mr-3 border-2 border-white/20">
                 <AvatarImage src={header.profileUrl ?? undefined} alt={header.name} data-ai-hint="person avatar" />
                 <AvatarFallback className="bg-gray-600 text-lg">
-                    {header.name?.charAt(0).toUpperCase()}
+                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-gray-300"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                 </AvatarFallback>
             </Avatar>
             <div className="flex-1">
@@ -183,7 +185,7 @@ const ChatHeader = ({ header, options }: { header: ChatHeaderOptions, options: S
     );
 }
 
-const ChatInput = ({ hidden, showKeyboard }: { hidden?: boolean, showKeyboard?: boolean }) => {
+const ChatInput = ({ hidden, showKeyboard, isAndroid }: { hidden?: boolean, showKeyboard?: boolean, isAndroid?: boolean }) => {
     if (hidden) return null;
     if (showKeyboard) {
         return (
@@ -192,13 +194,16 @@ const ChatInput = ({ hidden, showKeyboard }: { hidden?: boolean, showKeyboard?: 
     }
     return (
         <div className="h-14 bg-[#111B21] flex items-center px-2 py-2 gap-2 flex-shrink-0">
-            <div className="flex-1 bg-[#202C33] rounded-lg flex items-center px-4 gap-3 h-full">
+            <div className="flex-1 bg-[#202C33] rounded-full flex items-center px-4 gap-3 h-full">
                 <Smile className="text-gray-400" />
-                <span className="text-gray-400 text-lg flex-1">Mensagem</span>
+                <span className="text-gray-400 text-lg flex-1">Message</span>
                 <Paperclip className="text-gray-400 -rotate-45" />
                 <Camera className="text-gray-400" />
             </div>
-            <div className="w-12 h-12 bg-[#00A884] rounded-full flex items-center justify-center">
+            <div className={cn(
+              "w-12 h-12 rounded-full flex items-center justify-center",
+               isAndroid ? 'bg-green-600' : 'bg-[#00A884]'
+            )}>
                 <Mic className="text-white" />
             </div>
         </div>
@@ -219,6 +224,8 @@ const WhatsAppLivePreview: React.FC<WhatsAppLivePreviewProps> = ({
   const sanitizedMessages = useMemo(() => {
     return messages.filter((msg) => (msg.text && msg.text.trim().length > 0) || msg.imageUrl || msg.audioLabel);
   }, [messages]);
+
+  const isAndroid = options.interfaceStyle === 'android';
 
   const renderContent = () => {
     if (loading) {
@@ -274,7 +281,7 @@ const WhatsAppLivePreview: React.FC<WhatsAppLivePreviewProps> = ({
                     className={cn(
                         'relative rounded-lg px-3 py-1.5 text-sm shadow-md',
                         message.sender === 'me'
-                        ? 'bg-[#005C4B] text-white rounded-tr-none'
+                        ? (isAndroid ? 'bg-[#005C4B] text-white rounded-tr-lg' : 'bg-[#005C4B] text-white rounded-tr-none')
                         : 'bg-[#202C33] text-white rounded-tl-none'
                     )}
                     >
@@ -318,7 +325,11 @@ const WhatsAppLivePreview: React.FC<WhatsAppLivePreviewProps> = ({
   };
 
   return (
-    <div className={cn("aspect-[9/16] w-full bg-[#111B21] rounded-[40px] border-[10px] border-black overflow-hidden shadow-2xl relative flex flex-col", className)}>
+    <div className={cn(
+        "aspect-[9/16] w-full bg-[#111B21] border-[10px] border-black overflow-hidden shadow-2xl relative flex flex-col",
+        isAndroid ? 'rounded-2xl' : 'rounded-[40px]',
+        className
+    )}>
         
         <StatusBar options={options} />
         
@@ -326,12 +337,12 @@ const WhatsAppLivePreview: React.FC<WhatsAppLivePreviewProps> = ({
 
         <main className={cn(
             "flex-1 overflow-y-auto",
-            options.hideTop ? 'mt-[68px]' : 'mt-[96px]'
+             options.hideTop ? (isAndroid ? 'mt-[60px]' : 'mt-[68px]') : (isAndroid ? 'mt-[88px]' : 'mt-[96px]')
         )}>
           {renderContent()}
         </main>
         
-        <ChatInput hidden={hideBottom} showKeyboard={options.showKeyboard} />
+        <ChatInput hidden={hideBottom} showKeyboard={options.showKeyboard} isAndroid={isAndroid} />
 
     </div>
   );
@@ -371,3 +382,5 @@ export const __TEST_CASES__ = {
     ],
   },
 };
+
+    
