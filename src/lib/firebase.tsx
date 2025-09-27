@@ -1,3 +1,4 @@
+
 // src/lib/firebase.tsx
 'use client';
 
