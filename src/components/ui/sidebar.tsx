@@ -176,6 +176,13 @@ const Sidebar = React.forwardRef<
     ref
   ) => {
     const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
+       // Hover-only expansion for desktop when collapsed in icon mode.
+        const [isHovering, setIsHovering] = React.useState(false)
+        // If collapsed + icon and hovering, temporarily remove "icon" so CSS expands.
+        const effectiveCollapsible =
+          state === "collapsed"
+            ? (collapsible === "icon" && isHovering ? "" : collapsible)
+            : ""
 
     if (collapsible === "none") {
       return (
@@ -218,9 +225,15 @@ const Sidebar = React.forwardRef<
         ref={ref}
         className="group hidden md:block text-sidebar-foreground"
         data-state={state}
-        data-collapsible={state === "collapsed" ? collapsible : ""}
+        data-collapsible={effectiveCollapsible}
         data-variant={variant}
         data-side={side}
+        onMouseEnter={() => {
+            if (!isMobile && collapsible === "icon") setIsHovering(true)
+           }}
+            onMouseLeave={() => {
+           if (!isMobile && collapsible === "icon") setIsHovering(false)
+          }}
       >
         {/* This is what handles the sidebar gap on desktop */}
         <div
