@@ -231,7 +231,7 @@ export default function DashboardPage() {
               {tendenciasComunidade.map((oferta) => (
                 <Card
                   key={oferta.id}
-                  className="flex flex-col h-full glassmorphic transition-all duration-300 hover:border-primary/80 overflow-hidden group"
+                  className="glassmorphic flex flex-col h-full transition-all duration-300 hover:border-primary/80 overflow-hidden group"
                 >
                   <CardHeader>
                     <div className="flex justify-between items-start">
@@ -349,5 +349,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-
-    
