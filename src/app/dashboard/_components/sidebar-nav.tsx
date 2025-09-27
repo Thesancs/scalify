@@ -88,13 +88,13 @@ export function SidebarNav({ isMobile = false }: SidebarNavProps) {
                       className={cn(
                         'flex items-center justify-center h-10 w-10 rounded-lg text-sm font-medium',
                         'text-muted-foreground hover:text-foreground hover:bg-white/5',
-                        'transition-colors duration-200',
+                        'transition-all duration-200',
                         active && 'bg-primary/20 text-primary ring-1 ring-primary/30',
-                        'group-hover:w-full group-hover:justify-start group-hover:px-3' // Estilos de expansão
+                        'group-hover:w-full group-hover:justify-start group-hover:px-4' 
                       )}
                     >
                       <Icon className="h-5 w-5 shrink-0" />
-                      <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 delay-100 whitespace-nowrap ml-4">
+                      <span className="absolute left-14 opacity-0 transition-opacity duration-200 group-hover:relative group-hover:left-0 group-hover:ml-3 group-hover:opacity-100 whitespace-nowrap">
                         {item.label}
                       </span>
                     </Link>
