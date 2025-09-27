@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import {
@@ -10,7 +11,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, BarChart2, Ticket, TrendingUp, Star, Library } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { ArrowRight, BarChart2, Ticket, TrendingUp, Star, Search } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -83,6 +85,22 @@ const ofertasEscaladas = [
 ];
 
 export default function OfertasPage() {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('todos');
+  const [scoreFilter, setScoreFilter] = useState('todos');
+  const [typeFilter, setTypeFilter] = useState('todos');
+  const [formatFilter, setFormatFilter] = useState('todos');
+
+  const filteredOfertas = ofertasEscaladas.filter(oferta => {
+    return (
+      (oferta.title.toLowerCase().includes(searchTerm.toLowerCase())) &&
+      (statusFilter === 'todos' || oferta.status === statusFilter) &&
+      (scoreFilter === 'todos' || oferta.score.toLowerCase() === scoreFilter) &&
+      (typeFilter === 'todos' || oferta.type.toLowerCase() === typeFilter) &&
+      (formatFilter === 'todos' || oferta.format.toLowerCase().replace(/ /g, '-') === formatFilter)
+    );
+  });
+
   return (
     <div className="flex flex-col gap-8">
       <div>
@@ -94,53 +112,67 @@ export default function OfertasPage() {
         </p>
       </div>
 
-      <div className="flex flex-wrap items-center gap-4">
-        <Select>
-          <SelectTrigger className="w-full sm:w-[180px]">
-            <SelectValue placeholder="Status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="todos">Todos</SelectItem>
-            <SelectItem value="escalando">Escalando</SelectItem>
-            <SelectItem value="estavel">Estável</SelectItem>
-            <SelectItem value="queda">Em Queda</SelectItem>
-          </SelectContent>
-        </Select>
-        <Select>
-          <SelectTrigger className="w-full sm:w-[180px]">
-            <SelectValue placeholder="Score" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="todos">Todos</SelectItem>
-            <SelectItem value="alto">Alto</SelectItem>
-            <SelectItem value="medio">Médio</SelectItem>
-            <SelectItem value="baixo">Baixo</SelectItem>
-          </SelectContent>
-        </Select>
-        <Select>
-          <SelectTrigger className="w-full sm:w-[180px]">
-            <SelectValue placeholder="Tipo" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="infoproduto">Infoproduto</SelectItem>
-            <SelectItem value="encapsulado">Encapsulado</SelectItem>
-            <SelectItem value="saas">SaaS</SelectItem>
-          </SelectContent>
-        </Select>
-        <Select>
-          <SelectTrigger className="w-full sm:w-[180px]">
-            <SelectValue placeholder="Formato" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="vsl">VSL</SelectItem>
-            <SelectItem value="quiz">Quiz</SelectItem>
-            <SelectItem value="landing-page">Landing Page</SelectItem>
-          </SelectContent>
-        </Select>
+      <div className="flex flex-col gap-4">
+        <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <Input
+              type="search"
+              placeholder="Pesquisar por nome da oferta..."
+              className="w-full pl-10"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+        </div>
+        <div className="flex flex-wrap items-center gap-4">
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-full sm:w-[180px]">
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="todos">Todos Status</SelectItem>
+              <SelectItem value="escalando">Escalando</SelectItem>
+              <SelectItem value="estável">Estável</SelectItem>
+              <SelectItem value="queda">Em Queda</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={scoreFilter} onValueChange={setScoreFilter}>
+            <SelectTrigger className="w-full sm:w-[180px]">
+              <SelectValue placeholder="Score" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="todos">Todos Scores</SelectItem>
+              <SelectItem value="alto">Alto</SelectItem>
+              <SelectItem value="médio">Médio</SelectItem>
+              <SelectItem value="baixo">Baixo</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={typeFilter} onValueChange={setTypeFilter}>
+            <SelectTrigger className="w-full sm:w-[180px]">
+              <SelectValue placeholder="Tipo" />
+            </SelectTrigger>
+            <SelectContent>
+                <SelectItem value="todos">Todos os Tipos</SelectItem>
+              <SelectItem value="infoproduto">Infoproduto</SelectItem>
+              <SelectItem value="encapsulado">Encapsulado</SelectItem>
+              <SelectItem value="saas">SaaS</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={formatFilter} onValueChange={setFormatFilter}>
+            <SelectTrigger className="w-full sm:w-[180px]">
+              <SelectValue placeholder="Formato" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="todos">Todos Formatos</SelectItem>
+              <SelectItem value="vsl">VSL</SelectItem>
+              <SelectItem value="quiz">Quiz</SelectItem>
+              <SelectItem value="landing-page">Landing Page</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {ofertasEscaladas.map((oferta) => (
+        {filteredOfertas.map((oferta) => (
           <Card key={oferta.id} className="glassmorphic flex flex-col h-full transition-all duration-300 hover:scale-[1.02] hover:border-primary overflow-hidden group">
             <Link href={`/dashboard/ofertas/${oferta.id}`} className="flex flex-col flex-grow">
               <div className="relative w-full aspect-video">
@@ -216,6 +248,12 @@ export default function OfertasPage() {
           </Card>
         ))}
       </div>
+       {filteredOfertas.length === 0 && (
+        <div className="col-span-full text-center py-16">
+          <h3 className="text-2xl font-bold text-foreground">Nenhuma oferta encontrada</h3>
+          <p className="text-muted-foreground mt-2">Tente ajustar seus filtros ou o termo de busca.</p>
+        </div>
+      )}
     </div>
   );
 }
