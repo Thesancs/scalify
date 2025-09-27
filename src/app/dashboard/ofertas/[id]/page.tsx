@@ -107,7 +107,7 @@ export default function OfertaPage({ params }: { params: { id: string } }) {
         
         <div className="flex flex-col gap-8">
             {/* Hero Validado */}
-            <Card className="rounded-2xl glassmorphic border-0 overflow-hidden">
+            <Card className="glassmorphic rounded-2xl overflow-hidden border-0">
                 {oferta.imageUrl && (
                     <div className="relative w-full aspect-video">
                         <Image
@@ -156,7 +156,7 @@ export default function OfertaPage({ params }: { params: { id: string } }) {
             </Card>
 
             {/* Metricas Chave */}
-            <Card className="rounded-2xl glassmorphic border-0">
+            <Card className="glassmorphic rounded-2xl border-0">
                 <CardHeader>
                     <CardTitle>Métricas-Chave</CardTitle>
                 </CardHeader>
@@ -192,7 +192,7 @@ export default function OfertaPage({ params }: { params: { id: string } }) {
             </Card>
             
             {/* Ações Rápidas */}
-            <Card className="rounded-2xl glassmorphic border-0">
+            <Card className="glassmorphic rounded-2xl border-0">
                 <CardHeader>
                     <CardTitle>Ações Rápidas</CardTitle>
                 </CardHeader>
@@ -213,3 +213,5 @@ export default function OfertaPage({ params }: { params: { id: string } }) {
     </div>
   );
 }
+
+    

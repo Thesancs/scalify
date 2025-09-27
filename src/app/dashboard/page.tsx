@@ -169,7 +169,7 @@ export default function DashboardPage() {
               {validadas48h.map((oferta) => (
                 <Card
                   key={oferta.id}
-                  className="flex flex-col h-full glassmorphic transition-all duration-300 hover:border-primary/80 overflow-hidden group"
+                  className="glassmorphic flex flex-col h-full transition-all duration-300 hover:border-primary/80 overflow-hidden group border-0"
                 >
                   <CardHeader>
                     <div className="flex justify-between items-start">
@@ -231,7 +231,7 @@ export default function DashboardPage() {
               {tendenciasComunidade.map((oferta) => (
                 <Card
                   key={oferta.id}
-                  className="glassmorphic flex flex-col h-full transition-all duration-300 hover:border-primary/80 overflow-hidden group"
+                  className="glassmorphic flex flex-col h-full transition-all duration-300 hover:border-primary/80 overflow-hidden group border-0"
                 >
                   <CardHeader>
                     <div className="flex justify-between items-start">
@@ -290,7 +290,7 @@ export default function DashboardPage() {
                  <h2 className="text-2xl font-bold tracking-tight text-foreground mb-4">
                     Recomendação do Especialista
                  </h2>
-                 <Card className="glassmorphic border-primary/50">
+                 <Card className="glassmorphic border-primary/50 border-0">
                      <CardHeader>
                          <div className="flex justify-between items-center">
                             <CardTitle className="text-xl font-bold">{recomendacaoEspecialista.title}</CardTitle>
@@ -317,7 +317,7 @@ export default function DashboardPage() {
                 <h2 className="text-2xl font-bold tracking-tight text-foreground mb-4">
                     Mineração de Hoje
                 </h2>
-                <Card className="glassmorphic">
+                <Card className="glassmorphic border-0">
                     <CardContent className="p-4">
                         <Table>
                             <TableBody>
@@ -349,3 +349,5 @@ export default function DashboardPage() {
     </div>
   );
 }
+
+    

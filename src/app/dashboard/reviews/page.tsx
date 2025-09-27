@@ -112,7 +112,7 @@ export default function ReviewsPage() {
             initialState={designerState}
             onChange={setDesignerState}
           />
-          <Card className="glassmorphic">
+          <Card className="glassmorphic border-0">
             <CardHeader>
                 <CardTitle>Exportar Imagem</CardTitle>
                 <CardDescription>
@@ -151,3 +151,5 @@ export default function ReviewsPage() {
     </div>
   );
 }
+
+    

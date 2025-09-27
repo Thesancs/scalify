@@ -141,7 +141,7 @@ export default function OfertasPage() {
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {ofertasEscaladas.map((oferta) => (
-          <Card key={oferta.id} className="flex flex-col h-full rounded-2xl glassmorphic transition-all duration-300 hover:scale-[1.02] hover:border-primary overflow-hidden group">
+          <Card key={oferta.id} className="glassmorphic flex flex-col h-full transition-all duration-300 hover:scale-[1.02] hover:border-primary overflow-hidden group border-0">
             <Link href={`/dashboard/ofertas/${oferta.id}`} className="flex flex-col flex-grow">
               <div className="relative w-full aspect-video">
                 <Image
@@ -219,3 +219,5 @@ export default function OfertasPage() {
     </div>
   );
 }
+
+    

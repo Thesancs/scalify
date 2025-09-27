@@ -113,7 +113,7 @@ const ConversationDesigner: React.FC<ConversationDesignerProps> = ({
   }
 
   return (
-    <Card className="glassmorphic">
+    <Card className="glassmorphic border-0">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Settings className="text-primary h-6 w-6" />
@@ -307,3 +307,5 @@ const ConversationDesigner: React.FC<ConversationDesignerProps> = ({
 };
 
 export default ConversationDesigner;
+
+    
