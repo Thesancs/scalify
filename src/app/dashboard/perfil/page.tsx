@@ -6,10 +6,17 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
+import { useAuth } from '@/lib/firebase';
 import { Upload, KeyRound, Save } from 'lucide-react';
 
 export default function PerfilPage() {
+  const { user } = useAuth();
+  
+  const getInitials = (name: string | null) => {
+    if (!name) return 'U';
+    return name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+  };
+
   return (
     <div className="container mx-auto max-w-4xl py-8 animate-fade-in">
       <div className="mb-8">
@@ -34,11 +41,11 @@ export default function PerfilPage() {
               <div className="flex items-center gap-6">
                 <Avatar className="h-20 w-20 border-2 border-primary/50">
                   <AvatarImage
-                    src="https://picsum.photos/seed/user-avatar/80/80"
-                    alt="Usuário Teste"
+                    src={user?.photoURL ?? undefined}
+                    alt={user?.displayName ?? 'Usuário'}
                     data-ai-hint="person avatar"
                   />
-                  <AvatarFallback>UT</AvatarFallback>
+                  <AvatarFallback>{getInitials(user?.displayName)}</AvatarFallback>
                 </Avatar>
                 <div className="flex-1">
                   <Label htmlFor="profile-picture" className="mb-2 block">Foto de Perfil</Label>
@@ -56,11 +63,11 @@ export default function PerfilPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="name">Nome Completo</Label>
-                <Input id="name" defaultValue="Usuário Teste" />
+                <Input id="name" defaultValue={user?.displayName ?? ''} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email">Endereço de E-mail</Label>
-                <Input id="email" type="email" defaultValue="teste@scalify.com" disabled />
+                <Input id="email" type="email" defaultValue={user?.email ?? ''} disabled />
                 <p className="text-xs text-muted-foreground">O e-mail não pode ser alterado.</p>
               </div>
                <Button>

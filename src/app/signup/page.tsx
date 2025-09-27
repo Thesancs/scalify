@@ -70,11 +70,9 @@ export default function SignupPage() {
       );
       const user = userCredential.user;
       
-      // Adiciona o nome de usuário e telefone ao perfil
+      // Adiciona o nome de usuário ao perfil
       await updateProfile(user, {
         displayName: values.username,
-        // O telefone não é armazenado diretamente no perfil padrão, 
-        // mas pode ser salvo no Firestore/RTDB se necessário.
       });
 
       toast({
@@ -83,10 +81,16 @@ export default function SignupPage() {
       });
       router.push('/dashboard');
     } catch (error: any) {
+       let errorMessage = 'Ocorreu um erro desconhecido.';
+      if (error.code === 'auth/email-already-in-use') {
+        errorMessage = 'Este endereço de e-mail já está em uso.';
+      } else if (error.code === 'auth/weak-password') {
+        errorMessage = 'A senha é muito fraca. Tente uma mais forte.';
+      }
       toast({
         variant: 'destructive',
         title: 'Erro ao criar conta',
-        description: error.message,
+        description: errorMessage,
       });
     } finally {
       setIsLoading(false);
