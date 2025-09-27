@@ -24,10 +24,10 @@ const menuItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/dashboard/ofertas', label: 'Ofertas', icon: Tag },
   { href: '/dashboard/reviews', label: 'Reviews', icon: MessageSquare },
-  { href: '/dashboard/perfil', label: 'Perfil', icon: User },
   { href: '/dashboard/anticlone', label: 'AntiClone', icon: Shield },
   { href: '/dashboard/clonador', label: 'Clonador', icon: Copy },
   { href: '/dashboard/metadata', label: 'Metadata', icon: FileCode },
+  { href: '/dashboard/perfil', label: 'Perfil', icon: User },
 ];
 
 interface SidebarNavProps {
