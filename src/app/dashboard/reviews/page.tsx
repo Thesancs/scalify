@@ -1,9 +1,10 @@
+
 'use client';
 
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Loader2, Sparkles } from 'lucide-react';
+import { Download, Loader2, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { generateWhatsappImage } from '@/ai/flows/whatsapp-image-generator';
 import WhatsAppLivePreview, {
@@ -49,6 +50,16 @@ export default function ReviewsPage() {
     return messages
       .map((msg) => `${msg.sender === 'me' ? 'Eu' : header.name}: ${msg.text}`)
       .join('\n');
+  };
+  
+  const handleDownload = () => {
+    if (!generatedImage) return;
+    const link = document.createElement('a');
+    link.href = generatedImage;
+    link.download = `conversa-whatsapp-${designerState.header.name.toLowerCase().replace(/ /g, '-')}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const handleGenerate = async () => {
@@ -112,41 +123,39 @@ export default function ReviewsPage() {
             initialState={designerState}
             onChange={setDesignerState}
           />
-          <Card className="glassmorphic">
-            <CardHeader>
-                <CardTitle>Exportar Imagem</CardTitle>
-                <CardDescription>
-                    Quando estiver satisfeito com o resultado, gere a imagem final.
-                </CardDescription>
-            </CardHeader>
-            <CardContent>
-                <Button onClick={handleGenerate} disabled={isLoading} size="lg" className="w-full text-lg h-14">
-                    {isLoading ? (
-                    <>
-                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                        Gerando Imagem...
-                    </>
-                    ) : (
-                    <>
-                        <Sparkles className="mr-2 h-5 w-5" />
-                        Gerar Imagem da Conversa
-                    </>
-                    )}
-                </Button>
-            </CardContent>
-          </Card>
+           <Button onClick={handleGenerate} disabled={isLoading} size="lg" className="w-full text-lg h-14">
+              {isLoading ? (
+              <>
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                  Gerando Imagem...
+              </>
+              ) : (
+              <>
+                  <Sparkles className="mr-2 h-5 w-5" />
+                  Gerar Imagem
+              </>
+              )}
+          </Button>
         </div>
-        <Card className="glassmorphic flex items-center justify-center p-0 lg:p-6 bg-transparent shadow-none">
-          <WhatsAppLivePreview
-            options={designerState.options}
-            header={designerState.header}
-            messages={finalMessages}
-            loading={isLoading}
-            error={error}
-            generatedImage={generatedImage}
-            className="w-full h-full"
-          />
-        </Card>
+        <div className="flex flex-col items-center gap-4">
+            <Card className="glassmorphic w-full flex items-center justify-center p-0 lg:p-6 bg-transparent shadow-none">
+                <WhatsAppLivePreview
+                    options={designerState.options}
+                    header={designerState.header}
+                    messages={finalMessages}
+                    loading={isLoading}
+                    error={error}
+                    generatedImage={generatedImage}
+                    className="w-full h-full"
+                />
+            </Card>
+            {generatedImage && !isLoading && !error && (
+                <Button onClick={handleDownload} size="lg" className="w-full max-w-sm text-lg h-14">
+                    <Download className="mr-2 h-5 w-5" />
+                    Baixar Imagem (PNG)
+                </Button>
+            )}
+        </div>
       </div>
     </div>
   );
