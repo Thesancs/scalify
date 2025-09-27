@@ -13,7 +13,7 @@ export function AppSidebar() {
       className={cn(
         'hidden md:fixed md:inset-y-0 md:left-0 md:z-20 md:flex md:flex-col',
         'w-16 hover:w-72 transition-[width] duration-300 ease-in-out',
-        'glassmorphic border-r border-white/10 group'
+        'glassmorphic border-r border-white/10 group' // Adicionado 'group' para o hover funcionar
       )}
     >
       <div className="flex h-full flex-col">
