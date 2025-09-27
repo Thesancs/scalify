@@ -11,24 +11,21 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import Image from 'next/image';
-import { Sheet, SheetTrigger } from '@/components/ui/sheet';
 
-export function AppHeader() {
+interface AppHeaderProps {
+  onMenuClick?: () => void;
+}
+
+export function AppHeader({ onMenuClick }: AppHeaderProps) {
   
   return (
     <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center justify-between border-b border-white/10 bg-black/30 px-4 backdrop-blur-lg md:px-6">
       <div className="flex items-center gap-4 md:hidden">
         {/* Botão de Menu para Mobile */}
-        <Sheet>
-            <SheetTrigger asChild>
-                <Button variant="ghost" size="icon">
-                    <Menu className="h-6 w-6" />
-                    <span className="sr-only">Abrir Menu</span>
-                </Button>
-            </SheetTrigger>
-            {/* O SheetContent está no componente MobileSidebar */}
-        </Sheet>
+        <Button variant="ghost" size="icon" onClick={onMenuClick}>
+            <Menu className="h-6 w-6" />
+            <span className="sr-only">Abrir Menu</span>
+        </Button>
       </div>
 
        {/* Espaçador para centralizar o DropdownMenu no desktop */}

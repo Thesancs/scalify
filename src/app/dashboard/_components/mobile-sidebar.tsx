@@ -1,4 +1,3 @@
-// src/app/dashboard/_components/mobile-sidebar.tsx
 'use client';
 
 import {
@@ -9,15 +8,19 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { SidebarNav } from './sidebar-nav';
 
-export function MobileSidebar() {
+interface MobileSidebarProps {
+    isOpen: boolean;
+    onClose: () => void;
+}
+
+export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
   return (
-    <Sheet>
-      {/* O SheetTrigger está no AppHeader */}
+    <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent side="left" className="p-0 w-72 glassmorphic border-r border-white/10">
         <div className="flex h-full flex-col">
           {/* Cabeçalho da Sidebar */}
           <div className="flex h-16 shrink-0 items-center justify-center px-6">
-            <Link href="/dashboard" className="flex items-center">
+            <Link href="/dashboard" className="flex items-center" onClick={onClose}>
               <Image
                 src="/Scalify__1_-removebg-preview.png"
                 alt="Scalify Logo"
@@ -28,8 +31,10 @@ export function MobileSidebar() {
             </Link>
           </div>
 
-          {/* Adicionando SidebarNav com isMobile prop */}
-          <SidebarNav isMobile />
+          {/* Adicionando SidebarNav com isMobile prop e onClick para fechar */}
+          <div onClick={onClose}>
+            <SidebarNav isMobile />
+          </div>
         </div>
       </SheetContent>
     </Sheet>

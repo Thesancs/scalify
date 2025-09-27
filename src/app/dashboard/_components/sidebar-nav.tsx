@@ -1,4 +1,3 @@
-// src/app/dashboard/_components/sidebar-nav.tsx
 'use client';
 
 import {
@@ -87,21 +86,19 @@ export function SidebarNav({ isMobile = false }: SidebarNavProps) {
                       href={item.href}
                       aria-current={active ? 'page' : undefined}
                       className={cn(
-                        'flex items-center h-10 w-full rounded-lg text-sm font-medium',
+                        'flex items-center justify-center h-10 w-10 rounded-lg text-sm font-medium',
                         'text-muted-foreground hover:text-foreground hover:bg-white/5',
                         'transition-colors duration-200',
-                        active && 'bg-primary/20 text-primary ring-1 ring-primary/30'
+                        active && 'bg-primary/20 text-primary ring-1 ring-primary/30',
+                        'group-hover:w-full group-hover:justify-start group-hover:px-3' // Estilos de expansão
                       )}
                     >
-                      <div className="flex h-10 w-12 shrink-0 items-center justify-center">
-                        <Icon className="h-5 w-5" />
-                      </div>
-                      <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 delay-100 whitespace-nowrap">
+                      <Icon className="h-5 w-5 shrink-0" />
+                      <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 delay-100 whitespace-nowrap ml-4">
                         {item.label}
                       </span>
                     </Link>
                   </TooltipTrigger>
-                  {/* O Tooltip só aparece quando a sidebar está recolhida */}
                   <TooltipContent side="right" align="center" className="ml-2 group-hover:hidden">
                     <p>{item.label}</p>
                   </TooltipContent>
