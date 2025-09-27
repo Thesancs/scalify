@@ -24,8 +24,8 @@ export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
               <Image
                 src="/Logo Scalify.png"
                 alt="Scalify Logo"
-                width={140}
-                height={40}
+                width={60}
+                height={20}
                 priority
               />
             </Link>

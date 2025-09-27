@@ -21,11 +21,11 @@ export function AppSidebar() {
         <div className="flex h-16 shrink-0 items-center justify-center">
           <Link href="/dashboard" className="flex items-center justify-center h-full w-full">
              {/* Logo Completo - aparece no hover */}
-             <div className="w-36 opacity-0 group-hover:opacity-100 transition-opacity duration-200 ease-in-out">
+             <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 ease-in-out">
                <Image
                   src="/Logo Scalify.png"
                   alt="Scalify Logo"
-                  width={140}
+                  width={60}
                   height={40}
                   priority
                 />
