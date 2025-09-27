@@ -21,14 +21,7 @@ export default function PerfilPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {/* Coluna de Ações/Navegação (Opcional) */}
-        <div className="md:col-span-1">
-          {/* Pode adicionar navegação aqui no futuro, como "Segurança", "Notificações" etc. */}
-        </div>
-
-        {/* Coluna Principal de Conteúdo */}
-        <div className="md:col-span-2 flex flex-col gap-8">
+      <div className="flex flex-col gap-8">
           {/* Card de Informações Pessoais */}
           <Card className="glassmorphic">
             <CardHeader>
@@ -104,7 +97,6 @@ export default function PerfilPage() {
               </Button>
             </CardContent>
           </Card>
-        </div>
       </div>
     </div>
   );
