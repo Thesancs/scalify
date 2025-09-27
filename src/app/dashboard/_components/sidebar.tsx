@@ -25,7 +25,7 @@ export function AppSidebar() {
                <Image
                   src="/Logo Scalify.png"
                   alt="Scalify Logo"
-                  width={140}
+                  width={60}
                   height={40}
                   priority
                 />
