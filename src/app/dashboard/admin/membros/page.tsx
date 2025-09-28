@@ -19,7 +19,7 @@ export default function MembrosPage() {
       </div>
 
       <Tabs defaultValue="profiles" className="w-full">
-        <TabsList className="h-auto">
+        <TabsList className="h-auto bg-white/5 backdrop-blur-lg border border-white/10 shadow-lg">
           <TabsTrigger value="profiles" className="py-2">
             <Users className="mr-2" /> Perfis
           </TabsTrigger>
