@@ -25,15 +25,17 @@ import {
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { auth } from '@/lib/firebase';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, setPersistence, browserLocalPersistence, browserSessionPersistence } from 'firebase/auth';
 import { Loader2, LogIn } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { Checkbox } from '@/components/ui/checkbox';
 
 const formSchema = z.object({
   email: z.string().email('Por favor, insira um e-mail válido.'),
   password: z.string().min(1, 'A senha é obrigatória.'),
+  rememberMe: z.boolean().default(false),
 });
 
 export default function LoginPage() {
@@ -46,12 +48,16 @@ export default function LoginPage() {
     defaultValues: {
       email: '',
       password: '',
+      rememberMe: false,
     },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     try {
+      // Set persistence based on the "remember me" checkbox
+      await setPersistence(auth, values.rememberMe ? browserLocalPersistence : browserSessionPersistence);
+      
       await signInWithEmailAndPassword(auth, values.email, values.password);
       toast({
         title: 'Login bem-sucedido!',
@@ -116,6 +122,28 @@ export default function LoginPage() {
                     </FormItem>
                   )}
                 />
+                <div className="flex items-center justify-between">
+                    <FormField
+                    control={form.control}
+                    name="rememberMe"
+                    render={({ field }) => (
+                        <FormItem className="flex flex-row items-center space-x-3 space-y-0">
+                        <FormControl>
+                            <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                            />
+                        </FormControl>
+                        <FormLabel className="font-normal text-muted-foreground">
+                            Lembrar senha
+                        </FormLabel>
+                        </FormItem>
+                    )}
+                    />
+                     <Link href="#" className="text-xs text-muted-foreground hover:text-primary">
+                        Esqueceu sua senha?
+                    </Link>
+                </div>
                 <Button type="submit" className="w-full" disabled={isLoading}>
                   {isLoading ? (
                     <Loader2 className="animate-spin" />
@@ -136,9 +164,6 @@ export default function LoginPage() {
                 Crie uma agora
               </Link>
             </p>
-             <Link href="#" className="text-xs text-muted-foreground hover:text-primary">
-                Esqueceu sua senha?
-              </Link>
           </CardFooter>
         </Card>
       </div>
