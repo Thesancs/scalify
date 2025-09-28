@@ -26,12 +26,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { type Oferta } from '@/lib/ofertas-data';
-import { useEffect } from 'react';
-import { Save } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Save, Upload } from 'lucide-react';
+import Image from 'next/image';
 
 interface OfferFormDialogProps {
   isOpen: boolean;
@@ -45,7 +46,7 @@ const formSchema = z.object({
   type: z.enum(['Infoproduto', 'Encapsulado', 'SaaS']),
   format: z.enum(['VSL', 'Landing Page', 'Quiz']),
   status: z.enum(['escalando', 'estável', 'queda']),
-  imageUrl: z.string().url('Por favor, insira uma URL de imagem válida.'),
+  imageUrl: z.string().min(1, 'A imagem é obrigatória.'),
   vendasUrl: z.string().url('Por favor, insira uma URL válida para a página de vendas.'),
   checkoutUrl: z.string().url('Por favor, insira uma URL válida para o checkout.'),
 });
@@ -53,6 +54,8 @@ const formSchema = z.object({
 type OfferFormData = z.infer<typeof formSchema>;
 
 export function OfferFormDialog({ isOpen, onClose, onSave, oferta }: OfferFormDialogProps) {
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
   const form = useForm<OfferFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -65,20 +68,46 @@ export function OfferFormDialog({ isOpen, onClose, onSave, oferta }: OfferFormDi
       checkoutUrl: '',
     },
   });
+  
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>, fieldChange: (value: string) => void) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const dataUrl = reader.result as string;
+        fieldChange(dataUrl);
+        setImagePreview(dataUrl);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
 
   useEffect(() => {
-    if (oferta) {
-      form.reset({
-        title: oferta.title,
-        type: oferta.type,
-        format: oferta.format,
-        status: oferta.status,
-        imageUrl: oferta.imageUrl,
-        vendasUrl: oferta.vendasUrl || '',
-        checkoutUrl: oferta.checkoutUrl || '',
-      });
-    } else {
-      form.reset();
+    if (isOpen) {
+      if (oferta) {
+        form.reset({
+          title: oferta.title,
+          type: oferta.type,
+          format: oferta.format,
+          status: oferta.status,
+          imageUrl: oferta.imageUrl,
+          vendasUrl: oferta.vendasUrl || '',
+          checkoutUrl: oferta.checkoutUrl || '',
+        });
+        setImagePreview(oferta.imageUrl);
+      } else {
+        form.reset({
+          title: '',
+          type: 'Infoproduto',
+          format: 'VSL',
+          status: 'estável',
+          imageUrl: '',
+          vendasUrl: '',
+          checkoutUrl: '',
+        });
+        setImagePreview(null);
+      }
     }
   }, [oferta, form, isOpen]);
   
@@ -168,11 +197,28 @@ export function OfferFormDialog({ isOpen, onClose, onSave, oferta }: OfferFormDi
                     name="imageUrl"
                     render={({ field }) => (
                         <FormItem>
-                        <FormLabel>URL da Imagem da Oferta</FormLabel>
-                        <FormControl>
-                            <Input placeholder="https://..." {...field} />
-                        </FormControl>
-                        <FormMessage />
+                            <FormLabel>Imagem da Oferta</FormLabel>
+                             <FormControl>
+                                <div>
+                                    <Input 
+                                        type="file" 
+                                        className="hidden"
+                                        id="image-upload"
+                                        accept="image/png, image/jpeg, image/gif"
+                                        onChange={(e) => handleImageChange(e, field.onChange)}
+                                     />
+                                     <label htmlFor="image-upload" className="cursor-pointer inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 h-10 px-4 py-2 border border-input bg-background hover:bg-primary/20 hover:text-primary w-full">
+                                        <Upload className="mr-2 h-4 w-4" />
+                                        Carregar Imagem
+                                     </label>
+                                </div>
+                            </FormControl>
+                            {imagePreview && (
+                                <div className="mt-4 relative w-full h-48 rounded-md overflow-hidden border border-border">
+                                    <Image src={imagePreview} alt="Prévia da imagem" layout="fill" objectFit="cover" />
+                                </div>
+                            )}
+                            <FormMessage />
                         </FormItem>
                     )}
                  />
