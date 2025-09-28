@@ -25,7 +25,6 @@ import { useAuth } from '@/lib/firebase';
 
 const allMenuItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['Owner', 'Admin', 'Membro'] },
-  { href: '/dashboard/financeiro', label: 'Financeiro', icon: DollarSign, roles: ['Owner'] },
   { href: '/dashboard/ofertas', label: 'Ofertas', icon: Tag, roles: ['Owner', 'Admin', 'Membro'] },
   { href: '/dashboard/reviews', label: 'Reviews', icon: MessageSquare, roles: ['Owner', 'Admin', 'Membro'] },
   { href: '/dashboard/anticlone', label: 'AntiClone', icon: Shield, roles: ['Owner', 'Admin', 'Membro'] },
