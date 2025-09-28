@@ -11,80 +11,8 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
+import { ofertas as ofertasEscaladas } from '@/lib/ofertas-data';
 
-// Mock data
-const ofertasEscaladas = [
-  {
-    id: '1',
-    title: 'Método de 7 Segundos',
-    type: 'Infoproduto',
-    format: 'VSL',
-    ads: 670,
-    roas: 2,
-    ticket: 297,
-    status: 'escalando',
-    score: 'Alto',
-    porque: 'Alto volume de novos criativos e expansão para outros mercados. O momento de testar é agora.',
-    imageUrl: '/Desparasitar.PNG',
-    imageHint: 'health product',
-  },
-  {
-    id: '2',
-    title: 'Bactéria Gordurosa',
-    type: 'Encapsulado',
-    format: 'Landing Page',
-    ads: 180,
-    roas: 2,
-    ticket: 467,
-    status: 'escalando',
-    score: 'Alto',
-    porque: 'Sinais de saturação no público principal, mas com bom ROAS. Vale o teste em um novo ângulo.',
-    imageUrl: 'https://picsum.photos/seed/oferta-2/600/400',
-    imageHint: 'health science',
-  },
-  {
-    id: '3',
-    title: '100 Receitas Ricas em Proteínas',
-    type: 'Infoproduto',
-    format: 'Quiz',
-    ads: 140,
-    roas: 2,
-    ticket: 30,
-    status: 'queda',
-    score: 'Baixo',
-    porque: 'Apesar da queda, o ticket baixo pode ser uma barreira de entrada menor para novos públicos.',
-    imageUrl: 'https://picsum.photos/seed/oferta-3/600/400',
-    imageHint: 'healthy food',
-  },
-   {
-    id: '4',
-    title: 'Automação para SaaS',
-    type: 'SaaS',
-    format: 'Landing Page',
-    ads: 320,
-    roas: 3,
-    ticket: 997,
-    status: 'escalando',
-    score: 'Médio',
-    porque: 'Solução B2B com ticket alto e demanda crescente. Pouca concorrência e alto potencial de escala no Brasil.',
-    imageUrl: 'https://picsum.photos/seed/oferta-4/600/400',
-    imageHint: 'software interface',
-  },
-  {
-    id: '5',
-    title: 'Kit de Beleza Natural',
-    type: 'Encapsulado',
-    format: 'VSL',
-    ads: 95,
-    roas: 2.5,
-    ticket: 197,
-    status: 'estável',
-    score: 'Médio',
-    porque: 'Mercado em alta com público fiel e baixa concorrência em anúncios de vídeo.',
-    imageUrl: 'https://picsum.photos/seed/oferta-5/600/400',
-    imageHint: 'cosmetics beauty',
-  },
-];
 
 export default function OfertaPage({ params }: { params: { id: string } }) {
   const { toast } = useToast();
@@ -214,13 +142,13 @@ export default function OfertaPage({ params }: { params: { id: string } }) {
                         </Link>
                     </Button>
                     <Button size="lg" className="h-16 text-lg" variant="outline" asChild>
-                        <Link href="#">
+                        <Link href={oferta.vendasUrl || '#'} target="_blank" rel="noopener noreferrer">
                            <ExternalLink className="mr-2 h-6 w-6" />
                            Ver Página
                         </Link>
                     </Button>
                      <Button size="lg" className="h-16 text-lg" variant="outline" asChild>
-                        <Link href="https://pay.assiny.com.br/Vp4vBY/node/rBs9HF?utm_source=jLj68d88a3404cf14ad08e50b9c&utm_campaign=&utm_medium=&utm_content=%3A%3AIwZXh0bgNhZW0CMTAAYnJpZBExeml4YksxRVhxS2ExSkliZgEeiMQgpgpTG0srsTl5uo_8qqwfg5AQ5hpmTiIOSLsQJvZqjAFspSJvM0nOeaQ_aem_SWn5f0a9oxYe0-ud1PtgyA%3A%3A&utm_term=&xcod=jLj68d88a3404cf14ad08e50b9chQwK21wXxRhQwK21wXxRhQwK21wXxRhQwK21wXxR&sck=jLj68d88a3404cf14ad08e50b9chQwK21wXxRhQwK21wXxRhQwK21wXxRhQwK21wXxR&fbclid=IwZXh0bgNhZW0CMTAAYnJpZBExeml4YksxRVhxS2ExSkliZgEeiMQgpgpTG0srsTl5uo_8qqwfg5AQ5hpmTiIOSLsQJvZqjAFspSJvM0nOeaQ_aem_SWn5f0a9oxYe0-ud1PtgyA">
+                        <Link href={oferta.checkoutUrl || '#'} target="_blank" rel="noopener noreferrer">
                            <ShoppingCart className="mr-2 h-6 w-6" />
                            Ver Checkout
                         </Link>
@@ -231,7 +159,3 @@ export default function OfertaPage({ params }: { params: { id: string } }) {
     </div>
   );
 }
-
-    
-
-    

@@ -16,74 +16,8 @@ import { Input } from '@/components/ui/input';
 import { ArrowRight, BarChart2, Ticket, TrendingUp, Star, Search } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { ofertas as ofertasEscaladas } from '@/lib/ofertas-data';
 
-const ofertasEscaladas = [
-  {
-    id: '1',
-    title: 'Método de 7 Segundos',
-    type: 'Infoproduto',
-    format: 'VSL',
-    ads: 670,
-    roas: 2,
-    ticket: 297,
-    status: 'escalando',
-    imageUrl: '/Desparasitar.PNG',
-    imageHint: 'health product',
-    score: 'Alto'
-  },
-  {
-    id: '2',
-    title: 'Bactéria Gordurosa',
-    type: 'Encapsulado',
-    format: 'Landing Page',
-    ads: 180,
-    roas: 2,
-    ticket: 467,
-    status: 'escalando',
-    imageUrl: 'https://picsum.photos/seed/oferta-2/600/400',
-    imageHint: 'health science',
-    score: 'Alto'
-  },
-  {
-    id: '3',
-    title: '100 Receitas Ricas em Proteínas',
-    type: 'Infoproduto',
-    format: 'Quiz',
-    ads: 140,
-    roas: 2,
-    ticket: 30,
-    status: 'queda',
-    imageUrl: 'https://picsum.photos/seed/oferta-3/600/400',
-    imageHint: 'healthy food',
-    score: 'Baixo'
-  },
-   {
-    id: '4',
-    title: 'Automação para SaaS',
-    type: 'SaaS',
-    format: 'Landing Page',
-    ads: 320,
-    roas: 3,
-    ticket: 997,
-    status: 'escalando',
-    imageUrl: 'https://picsum.photos/seed/oferta-4/600/400',
-    imageHint: 'software interface',
-    score: 'Médio'
-  },
-  {
-    id: '5',
-    title: 'Kit de Beleza Natural',
-    type: 'Encapsulado',
-    format: 'VSL',
-    ads: 95,
-    roas: 2.5,
-    ticket: 197,
-    status: 'estável',
-    imageUrl: 'https://picsum.photos/seed/oferta-5/600/400',
-    imageHint: 'cosmetics beauty',
-    score: 'Médio'
-  },
-];
 
 export default function OfertasPage() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -267,7 +201,3 @@ export default function OfertasPage() {
     </div>
   );
 }
-
-    
-
-    

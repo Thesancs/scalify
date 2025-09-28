@@ -1,8 +1,6 @@
 
 'use client';
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -27,55 +25,11 @@ import {
 } from '@/components/ui/table';
 import { MoreVertical, PlusCircle } from 'lucide-react';
 import Image from 'next/image';
+import { useState } from 'react';
+import { type Oferta, ofertas as initialOfertas } from '@/lib/ofertas-data';
+import { Badge } from '@/components/ui/badge';
+import { OfferFormDialog } from './_components/offer-form-dialog';
 
-// Mock data - using the same data from a-ofertas page for consistency
-const ofertas = [
-  {
-    id: '1',
-    title: 'Método de 7 Segundos',
-    type: 'Infoproduto',
-    format: 'VSL',
-    status: 'escalando',
-    imageUrl: '/Desparasitar.PNG',
-    imageHint: 'health product',
-  },
-  {
-    id: '2',
-    title: 'Bactéria Gordurosa',
-    type: 'Encapsulado',
-    format: 'Landing Page',
-    status: 'escalando',
-    imageUrl: 'https://picsum.photos/seed/oferta-2/40/40',
-    imageHint: 'health science',
-  },
-  {
-    id: '3',
-    title: '100 Receitas Ricas em Proteínas',
-    type: 'Infoproduto',
-    format: 'Quiz',
-    status: 'queda',
-    imageUrl: 'https://picsum.photos/seed/oferta-3/40/40',
-    imageHint: 'healthy food',
-  },
-   {
-    id: '4',
-    title: 'Automação para SaaS',
-    type: 'SaaS',
-    format: 'Landing Page',
-    status: 'escalando',
-    imageUrl: 'https://picsum.photos/seed/oferta-4/40/40',
-    imageHint: 'software interface',
-  },
-  {
-    id: '5',
-    title: 'Kit de Beleza Natural',
-    type: 'Encapsulado',
-    format: 'VSL',
-    status: 'estável',
-    imageUrl: 'https://picsum.photos/seed/oferta-5/40/40',
-    imageHint: 'cosmetics beauty',
-  },
-];
 
 const getStatusBadgeVariant = (status: string) => {
   switch (status) {
@@ -92,6 +46,33 @@ const getStatusBadgeVariant = (status: string) => {
 
 
 export default function CatalogoAdminPage() {
+  const [ofertas, setOfertas] = useState<Oferta[]>(initialOfertas);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedOferta, setSelectedOferta] = useState<Oferta | undefined>(undefined);
+
+  const handleSave = (ofertaToSave: Oferta) => {
+    if (selectedOferta) {
+      // Edit
+      setOfertas(ofertas.map(o => o.id === ofertaToSave.id ? ofertaToSave : o));
+    } else {
+      // Add
+      setOfertas([...ofertas, { ...ofertaToSave, id: String(Date.now()) }]);
+    }
+    setIsDialogOpen(false);
+    setSelectedOferta(undefined);
+  };
+  
+  const handleOpenDialog = (oferta?: Oferta) => {
+    setSelectedOferta(oferta);
+    setIsDialogOpen(true);
+  }
+
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
+    setSelectedOferta(undefined);
+  }
+
+
   return (
     <div className="container mx-auto max-w-7xl py-8 animate-fade-in space-y-8">
       <Card className="glassmorphic">
@@ -103,7 +84,7 @@ export default function CatalogoAdminPage() {
                   Adicione, edite ou remova as ofertas da plataforma.
                 </CardDescription>
               </div>
-              <Button>
+              <Button onClick={() => handleOpenDialog()}>
                   <PlusCircle className="mr-2 h-4 w-4" />
                   Adicionar Oferta
               </Button>
@@ -155,7 +136,9 @@ export default function CatalogoAdminPage() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem>Editar</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleOpenDialog(oferta)}>
+                          Editar
+                        </DropdownMenuItem>
                         <DropdownMenuItem className="text-red-400 focus:text-red-500">
                           Remover
                         </DropdownMenuItem>
@@ -168,6 +151,14 @@ export default function CatalogoAdminPage() {
           </Table>
         </CardContent>
       </Card>
+
+      <OfferFormDialog
+        isOpen={isDialogOpen}
+        onClose={handleCloseDialog}
+        onSave={handleSave}
+        oferta={selectedOferta}
+      />
+
     </div>
   );
 }
