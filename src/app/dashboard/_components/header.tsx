@@ -1,7 +1,7 @@
 
 'use client';
 
-import { LogOut, User, Menu } from 'lucide-react';
+import { LogOut, User, Menu, Shield } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -17,13 +17,19 @@ import { useAuth } from '@/lib/firebase';
 import { auth } from '@/lib/firebase';
 import { signOut } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 interface AppHeaderProps {
   onMenuClick?: () => void;
 }
 
 export function AppHeader({ onMenuClick }: AppHeaderProps) {
-  const { user } = useAuth();
+  const { user, role } = useAuth();
   const router = useRouter();
 
   const handleLogout = async () => {
@@ -51,6 +57,23 @@ export function AppHeader({ onMenuClick }: AppHeaderProps) {
 
 
       <div className="flex items-center gap-4">
+        {role === 'Owner' && (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="ghost" size="icon" asChild>
+                  <Link href="/dashboard/admin">
+                    <Shield className="h-5 w-5 text-muted-foreground hover:text-primary" />
+                    <span className="sr-only">Painel Admin</span>
+                  </Link>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Painel de Administração</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        )}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
