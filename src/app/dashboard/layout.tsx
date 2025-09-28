@@ -6,19 +6,25 @@ import { AppHeader } from "./_components/header";
 import { AppSidebar } from "./_components/sidebar";
 import { MobileSidebar } from "./_components/mobile-sidebar";
 import { useAuth } from "@/lib/firebase";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { Loader2 } from "lucide-react";
 
 export default function DashboardLayout({ children }: PropsWithChildren) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user, loading } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     if (!loading && !user) {
       router.push('/login');
     }
   }, [user, loading, router]);
+
+  // Se for uma rota de admin, o layout aninhado de admin cuidará da renderização.
+  if (pathname.startsWith('/dashboard/admin')) {
+      return <>{children}</>;
+  }
   
   if (loading || !user) {
     return (
@@ -30,10 +36,8 @@ export default function DashboardLayout({ children }: PropsWithChildren) {
 
   return (
     <div className="flex min-h-screen">
-      {/* Sidebar para Desktop */}
       <AppSidebar />
       
-      {/* Sidebar para Mobile (controlada por estado) */}
       <MobileSidebar 
         isOpen={isMobileMenuOpen} 
         onClose={() => setIsMobileMenuOpen(false)} 
