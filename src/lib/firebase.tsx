@@ -52,7 +52,12 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       if (user) {
         const tokenResult = await user.getIdTokenResult();
         const claims = tokenResult.claims as CustomClaims;
-        const userWithRole: AppUser = { ...user, role: claims.role || 'Membro' };
+        // HACK: For development, grant 'Owner' role to a specific email
+        // or default to 'Membro'. In a real app, this logic should be
+        // handled securely on a backend.
+        const userRole = claims.role || (user.email === 'Agenciasancs@gmail.com' ? 'Owner' : 'Membro');
+        
+        const userWithRole: AppUser = { ...user, role: userRole };
 
         setUser(userWithRole);
         setRole(userWithRole.role);
