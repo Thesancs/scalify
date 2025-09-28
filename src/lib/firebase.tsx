@@ -1,9 +1,8 @@
-
 // src/lib/firebase.tsx
 'use client';
 
 import { initializeApp, getApps, getApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import { getAuth, onIdTokenChanged, type User } from 'firebase/auth';
 import { PropsWithChildren, createContext, useContext, useEffect, useState } from 'react';
 
 // Your web app's Firebase configuration
@@ -20,22 +19,47 @@ const firebaseConfig = {
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const auth = getAuth(app);
 
+// Type for custom claims, including the role
+interface CustomClaims {
+    role?: 'Owner' | 'Admin' | 'Membro';
+    [key: string]: any;
+}
+
+// Extended user type to include role
+export interface AppUser extends User {
+    role?: CustomClaims['role'];
+}
+
+
 // Auth context
 const AuthContext = createContext<{
-  user: any;
+  user: AppUser | null;
   loading: boolean;
+  role: CustomClaims['role'] | null;
 }>({
   user: null,
   loading: true,
+  role: null,
 });
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<AppUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const [role, setRole] = useState<CustomClaims['role'] | null>(null);
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      setUser(user);
+    const unsubscribe = onIdTokenChanged(auth, async (user) => {
+      if (user) {
+        const tokenResult = await user.getIdTokenResult();
+        const claims = tokenResult.claims as CustomClaims;
+        const userWithRole: AppUser = { ...user, role: claims.role || 'Membro' };
+
+        setUser(userWithRole);
+        setRole(userWithRole.role);
+      } else {
+        setUser(null);
+        setRole(null);
+      }
       setLoading(false);
     });
 
@@ -43,7 +67,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading }}>
+    <AuthContext.Provider value={{ user, loading, role }}>
       {children}
     </AuthContext.Provider>
   );

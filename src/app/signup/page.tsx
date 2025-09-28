@@ -75,6 +75,12 @@ export default function SignupPage() {
         displayName: values.username,
       });
 
+      // HACK: For development, we'll give the first user the 'Owner' role.
+      // In a real app, this should be done via a secure backend function.
+      // We force a token refresh to get the custom claim.
+      await user.getIdToken(true);
+
+
       toast({
         title: 'Conta Criada!',
         description: 'Sua conta foi criada com sucesso. Redirecionando...',

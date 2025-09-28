@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -8,6 +9,7 @@ import {
   Copy,
   FileCode,
   User,
+  DollarSign, // Ícone para financeiro
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -19,15 +21,17 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { useAuth } from '@/lib/firebase';
 
-const menuItems = [
-  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/dashboard/ofertas', label: 'Ofertas', icon: Tag },
-  { href: '/dashboard/reviews', label: 'Reviews', icon: MessageSquare },
-  { href: '/dashboard/anticlone', label: 'AntiClone', icon: Shield },
-  { href: '/dashboard/clonador', label: 'Clonador', icon: Copy },
-  { href: '/dashboard/metadata', label: 'Metadata', icon: FileCode },
-  { href: '/dashboard/perfil', label: 'Perfil', icon: User },
+const allMenuItems = [
+  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['Owner', 'Admin', 'Membro'] },
+  { href: '/dashboard/financeiro', label: 'Financeiro', icon: DollarSign, roles: ['Owner'] },
+  { href: '/dashboard/ofertas', label: 'Ofertas', icon: Tag, roles: ['Owner', 'Admin', 'Membro'] },
+  { href: '/dashboard/reviews', label: 'Reviews', icon: MessageSquare, roles: ['Owner', 'Admin', 'Membro'] },
+  { href: '/dashboard/anticlone', label: 'AntiClone', icon: Shield, roles: ['Owner', 'Admin', 'Membro'] },
+  { href: '/dashboard/clonador', label: 'Clonador', icon: Copy, roles: ['Owner', 'Admin', 'Membro'] },
+  { href: '/dashboard/metadata', label: 'Metadata', icon: FileCode, roles: ['Owner', 'Admin', 'Membro'] },
+  { href: '/dashboard/perfil', label: 'Perfil', icon: User, roles: ['Owner', 'Admin', 'Membro'] },
 ];
 
 interface SidebarNavProps {
@@ -36,6 +40,12 @@ interface SidebarNavProps {
 
 export function SidebarNav({ isMobile = false }: SidebarNavProps) {
   const pathname = usePathname();
+  const { role } = useAuth();
+
+  const menuItems = React.useMemo(() => {
+    if (!role) return [];
+    return allMenuItems.filter(item => item.roles.includes(role));
+  }, [role]);
 
   const isActive = React.useCallback(
     (href: string) => pathname === href || (href !== '/dashboard' && pathname.startsWith(href)),
