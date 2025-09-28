@@ -17,7 +17,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormDescription,
 } from '@/components/ui/form';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -29,7 +31,7 @@ import {
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { type Oferta } from '@/lib/ofertas-data';
+import { type Oferta, formatOptions } from '@/lib/ofertas-data';
 import { useEffect, useState } from 'react';
 import { Save, Upload } from 'lucide-react';
 import Image from 'next/image';
@@ -45,7 +47,9 @@ interface OfferFormDialogProps {
 const formSchema = z.object({
   title: z.string().min(3, 'O título é obrigatório.'),
   type: z.enum(['Infoproduto', 'Encapsulado', 'SaaS']),
-  format: z.enum(['VSL', 'Landing Page', 'Quiz']),
+  format: z.array(z.string()).refine((value) => value.some((item) => item), {
+    message: 'Você precisa selecionar pelo menos um formato.',
+  }),
   status: z.enum(['escalando', 'estável', 'queda']),
   imageUrl: z.string().min(1, 'A imagem é obrigatória.'),
   vendasUrl: z.string().url('Por favor, insira uma URL válida para a página de vendas.'),
@@ -62,7 +66,7 @@ export function OfferFormDialog({ isOpen, onClose, onSave, oferta }: OfferFormDi
     defaultValues: {
       title: '',
       type: 'Infoproduto',
-      format: 'VSL',
+      format: ['VSL'],
       status: 'estável',
       imageUrl: '',
       vendasUrl: '',
@@ -101,7 +105,7 @@ export function OfferFormDialog({ isOpen, onClose, onSave, oferta }: OfferFormDi
         form.reset({
           title: '',
           type: 'Infoproduto',
-          format: 'VSL',
+          format: ['VSL'],
           status: 'estável',
           imageUrl: '',
           vendasUrl: '',
@@ -173,20 +177,20 @@ export function OfferFormDialog({ isOpen, onClose, onSave, oferta }: OfferFormDi
                           </FormItem>
                       )}
                   />
-                  <FormField
+                    <FormField
                       control={form.control}
-                      name="format"
+                      name="status"
                       render={({ field }) => (
                           <FormItem>
-                          <FormLabel>Formato</FormLabel>
+                          <FormLabel>Status</FormLabel>
                           <Select onValueChange={field.onChange} defaultValue={field.value}>
                               <FormControl>
-                                  <SelectTrigger><SelectValue placeholder="Selecione o formato" /></SelectTrigger>
+                                  <SelectTrigger><SelectValue placeholder="Selecione o status" /></SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                  <SelectItem value="VSL">VSL</SelectItem>
-                                  <SelectItem value="Landing Page">Landing Page</SelectItem>
-                                  <SelectItem value="Quiz">Quiz</SelectItem>
+                                  <SelectItem value="escalando">Escalando</SelectItem>
+                                  <SelectItem value="estável">Estável</SelectItem>
+                                  <SelectItem value="queda">Em Queda</SelectItem>
                               </SelectContent>
                           </Select>
                           <FormMessage />
@@ -194,6 +198,54 @@ export function OfferFormDialog({ isOpen, onClose, onSave, oferta }: OfferFormDi
                       )}
                   />
               </div>
+                <FormField
+                  control={form.control}
+                  name="format"
+                  render={() => (
+                    <FormItem>
+                      <div className="mb-4">
+                        <FormLabel className="text-base">Formato da Oferta</FormLabel>
+                        <FormDescription>
+                          Selecione um ou mais formatos.
+                        </FormDescription>
+                      </div>
+                      {formatOptions.map((item) => (
+                        <FormField
+                          key={item.id}
+                          control={form.control}
+                          name="format"
+                          render={({ field }) => {
+                            return (
+                              <FormItem
+                                key={item.id}
+                                className="flex flex-row items-start space-x-3 space-y-0"
+                              >
+                                <FormControl>
+                                  <Checkbox
+                                    checked={field.value?.includes(item.id)}
+                                    onCheckedChange={(checked) => {
+                                      return checked
+                                        ? field.onChange([...field.value, item.id])
+                                        : field.onChange(
+                                            field.value?.filter(
+                                              (value) => value !== item.id
+                                            )
+                                          )
+                                    }}
+                                  />
+                                </FormControl>
+                                <FormLabel className="font-normal">
+                                  {item.label}
+                                </FormLabel>
+                              </FormItem>
+                            )
+                          }}
+                        />
+                      ))}
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <FormField
                   control={form.control}
                   name="imageUrl"

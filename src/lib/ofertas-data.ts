@@ -1,9 +1,10 @@
 
+
 export type Oferta = {
     id: string;
     title: string;
     type: 'Infoproduto' | 'Encapsulado' | 'SaaS';
-    format: 'VSL' | 'Landing Page' | 'Quiz';
+    format: ('VSL' | 'Landing Page' | 'Quiz')[];
     ads: number;
     roas: number;
     ticket: number;
@@ -16,13 +17,18 @@ export type Oferta = {
     checkoutUrl?: string;
 };
 
+export const formatOptions: { id: 'VSL' | 'Landing Page' | 'Quiz', label: string }[] = [
+    { id: 'VSL', label: 'VSL' },
+    { id: 'Landing Page', label: 'Landing Page' },
+    { id: 'Quiz', label: 'Quiz' },
+];
 
 export const ofertas: Oferta[] = [
   {
     id: '1',
     title: 'Método de 7 Segundos',
     type: 'Infoproduto',
-    format: 'VSL',
+    format: ['VSL'],
     ads: 670,
     roas: 2,
     ticket: 297,
@@ -38,7 +44,7 @@ export const ofertas: Oferta[] = [
     id: '2',
     title: 'Bactéria Gordurosa',
     type: 'Encapsulado',
-    format: 'Landing Page',
+    format: ['Landing Page'],
     ads: 180,
     roas: 2,
     ticket: 467,
@@ -54,7 +60,7 @@ export const ofertas: Oferta[] = [
     id: '3',
     title: '100 Receitas Ricas em Proteínas',
     type: 'Infoproduto',
-    format: 'Quiz',
+    format: ['Quiz'],
     ads: 140,
     roas: 2,
     ticket: 30,
@@ -70,7 +76,7 @@ export const ofertas: Oferta[] = [
     id: '4',
     title: 'Automação para SaaS',
     type: 'SaaS',
-    format: 'Landing Page',
+    format: ['Landing Page'],
     ads: 320,
     roas: 3,
     ticket: 997,
@@ -86,7 +92,7 @@ export const ofertas: Oferta[] = [
     id: '5',
     title: 'Kit de Beleza Natural',
     type: 'Encapsulado',
-    format: 'VSL',
+    format: ['VSL'],
     ads: 95,
     roas: 2.5,
     ticket: 197,

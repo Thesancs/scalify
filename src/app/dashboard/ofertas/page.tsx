@@ -36,12 +36,14 @@ export default function OfertasPage() {
     const normalizedSearchTerm = normalizeString(searchTerm);
     const normalizedTitle = normalizeString(oferta.title);
 
+    const formatMatch = formatFilter === 'todos' || oferta.format.map(f => f.toLowerCase().replace(/ /g, '-')).includes(formatFilter);
+
     return (
       (normalizedTitle.includes(normalizedSearchTerm)) &&
       (statusFilter === 'todos' || oferta.status === statusFilter) &&
       (scoreFilter === 'todos' || oferta.score.toLowerCase() === scoreFilter) &&
       (typeFilter === 'todos' || oferta.type.toLowerCase() === typeFilter) &&
-      (formatFilter === 'todos' || oferta.format.toLowerCase().replace(/ /g, '-') === formatFilter)
+      formatMatch
     );
   });
 
@@ -157,7 +159,9 @@ export default function OfertasPage() {
               <CardContent className="flex-grow space-y-3">
                 <div className="flex flex-wrap gap-2">
                   <Badge variant="secondary">{oferta.type}</Badge>
-                  <Badge variant="outline" className="border-primary/50 text-primary">{oferta.format}</Badge>
+                  {oferta.format.map(f => (
+                    <Badge key={f} variant="outline" className="border-primary/50 text-primary">{f}</Badge>
+                  ))}
                 </div>
                 <div className="space-y-2 text-sm text-muted-foreground pt-2">
                   <div className="flex items-center justify-between">

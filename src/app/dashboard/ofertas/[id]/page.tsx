@@ -82,7 +82,9 @@ export default function OfertaPage({ params }: { params: { id: string } }) {
                     </div>
                     <div className="flex flex-wrap gap-2">
                         <Badge variant="secondary" className="text-sm">{oferta.type}</Badge>
-                        <Badge variant="outline" className="border-primary/50 text-primary text-sm">{oferta.format}</Badge>
+                         {oferta.format.map(f => (
+                            <Badge key={f} variant="outline" className="border-primary/50 text-primary text-sm">{f}</Badge>
+                        ))}
                     </div>
                 </CardHeader>
                 <CardContent>

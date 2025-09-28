@@ -120,8 +120,10 @@ export default function CatalogoAdminPage() {
                   <TableCell className="text-muted-foreground">
                     {oferta.type}
                   </TableCell>
-                   <TableCell className="text-muted-foreground">
-                    <Badge variant="outline" className="border-primary/50 text-primary">{oferta.format}</Badge>
+                   <TableCell className="text-muted-foreground space-x-1">
+                    {oferta.format.map(f => (
+                        <Badge key={f} variant="outline" className="border-primary/50 text-primary">{f}</Badge>
+                    ))}
                   </TableCell>
                   <TableCell>
                     <Badge className={`capitalize ${getStatusBadgeVariant(oferta.status)}`}>
