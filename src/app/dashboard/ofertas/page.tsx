@@ -27,8 +27,8 @@ const ofertasEscaladas = [
     roas: 2,
     ticket: 297,
     status: 'escalando',
-    imageUrl: 'https://picsum.photos/seed/oferta-1/600/400',
-    imageHint: 'abstract technology',
+    imageUrl: '/Desparasitar.PNG',
+    imageHint: 'health product',
     score: 'Alto'
   },
   {
@@ -267,5 +267,7 @@ export default function OfertasPage() {
     </div>
   );
 }
+
+    
 
     
