@@ -220,7 +220,7 @@ export default function OfertaPage({ params }: { params: { id: string } }) {
                         </Link>
                     </Button>
                      <Button size="lg" className="h-16 text-lg" variant="outline" asChild>
-                        <Link href="#">
+                        <Link href="https://pay.assiny.com.br/Vp4vBY/node/rBs9HF?utm_source=jLj68d88a3404cf14ad08e50b9c&utm_campaign=&utm_medium=&utm_content=%3A%3AIwZXh0bgNhZW0CMTAAYnJpZBExeml4YksxRVhxS2ExSkliZgEeiMQgpgpTG0srsTl5uo_8qqwfg5AQ5hpmTiIOSLsQJvZqjAFspSJvM0nOeaQ_aem_SWn5f0a9oxYe0-ud1PtgyA%3A%3A&utm_term=&xcod=jLj68d88a3404cf14ad08e50b9chQwK21wXxRhQwK21wXxRhQwK21wXxRhQwK21wXxR&sck=jLj68d88a3404cf14ad08e50b9chQwK21wXxRhQwK21wXxRhQwK21wXxRhQwK21wXxR&fbclid=IwZXh0bgNhZW0CMTAAYnJpZBExeml4YksxRVhxS2ExSkliZgEeiMQgpgpTG0srsTl5uo_8qqwfg5AQ5hpmTiIOSLsQJvZqjAFspSJvM0nOeaQ_aem_SWn5f0a9oxYe0-ud1PtgyA">
                            <ShoppingCart className="mr-2 h-6 w-6" />
                            Ver Checkout
                         </Link>
