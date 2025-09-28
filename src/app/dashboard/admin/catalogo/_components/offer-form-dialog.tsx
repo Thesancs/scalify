@@ -26,13 +26,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { type Oferta } from '@/lib/ofertas-data';
 import { useEffect, useState } from 'react';
 import { Save, Upload } from 'lucide-react';
 import Image from 'next/image';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface OfferFormDialogProps {
   isOpen: boolean;
@@ -128,137 +129,140 @@ export function OfferFormDialog({ isOpen, onClose, onSave, oferta }: OfferFormDi
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px] glassmorphic">
+      <DialogContent className="sm:max-w-xl glassmorphic max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle>{oferta ? 'Editar Oferta' : 'Adicionar Nova Oferta'}</DialogTitle>
           <DialogDescription>
             {oferta ? 'Modifique os detalhes da oferta abaixo.' : 'Preencha os campos para criar uma nova oferta.'}
           </DialogDescription>
         </DialogHeader>
-        <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
-                 <FormField
-                    control={form.control}
-                    name="title"
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>Título da Oferta</FormLabel>
-                        <FormControl>
-                            <Input placeholder="Ex: Método de 7 Segundos" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                 />
-                 <div className="grid grid-cols-2 gap-4">
+        <ScrollArea className="flex-1 pr-6 -mr-6">
+            <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
                     <FormField
                         control={form.control}
-                        name="type"
+                        name="title"
                         render={({ field }) => (
                             <FormItem>
-                            <FormLabel>Tipo</FormLabel>
-                               <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                <FormControl>
-                                    <SelectTrigger><SelectValue placeholder="Selecione o tipo" /></SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                    <SelectItem value="Infoproduto">Infoproduto</SelectItem>
-                                    <SelectItem value="Encapsulado">Encapsulado</SelectItem>
-                                    <SelectItem value="SaaS">SaaS</SelectItem>
-                                </SelectContent>
-                            </Select>
-                            <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                     <FormField
-                        control={form.control}
-                        name="format"
-                        render={({ field }) => (
-                            <FormItem>
-                            <FormLabel>Formato</FormLabel>
-                             <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                <FormControl>
-                                    <SelectTrigger><SelectValue placeholder="Selecione o formato" /></SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                    <SelectItem value="VSL">VSL</SelectItem>
-                                    <SelectItem value="Landing Page">Landing Page</SelectItem>
-                                    <SelectItem value="Quiz">Quiz</SelectItem>
-                                </SelectContent>
-                            </Select>
-                            <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                 </div>
-                  <FormField
-                    control={form.control}
-                    name="imageUrl"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Imagem da Oferta</FormLabel>
-                             <FormControl>
-                                <div>
-                                    <Input 
-                                        type="file" 
-                                        className="hidden"
-                                        id="image-upload"
-                                        accept="image/png, image/jpeg, image/gif"
-                                        onChange={(e) => handleImageChange(e, field.onChange)}
-                                     />
-                                     <label htmlFor="image-upload" className="cursor-pointer inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 h-10 px-4 py-2 border border-input bg-background hover:bg-primary/20 hover:text-primary w-full">
-                                        <Upload className="mr-2 h-4 w-4" />
-                                        Carregar Imagem
-                                     </label>
-                                </div>
+                            <FormLabel>Título da Oferta</FormLabel>
+                            <FormControl>
+                                <Input placeholder="Ex: Método de 7 Segundos" {...field} />
                             </FormControl>
-                            {imagePreview && (
-                                <div className="mt-4 relative w-full h-48 rounded-md overflow-hidden border border-border">
-                                    <Image src={imagePreview} alt="Prévia da imagem" layout="fill" objectFit="cover" />
-                                </div>
-                            )}
                             <FormMessage />
-                        </FormItem>
-                    )}
-                 />
-                 <FormField
-                    control={form.control}
-                    name="vendasUrl"
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>URL da Página de Vendas</FormLabel>
-                        <FormControl>
-                            <Input placeholder="https://..." {...field} />
-                        </FormControl>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                 />
-                 <FormField
-                    control={form.control}
-                    name="checkoutUrl"
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>URL do Checkout</FormLabel>
-                        <FormControl>
-                            <Input placeholder="https://..." {...field} />
-                        </FormControl>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                 />
-                <DialogFooter>
-                    <Button type="button" variant="ghost" onClick={onClose}>Cancelar</Button>
-                    <Button type="submit">
-                        <Save className="mr-2 h-4 w-4"/>
-                        Salvar Oferta
-                    </Button>
-                </DialogFooter>
-            </form>
-        </Form>
+                            </FormItem>
+                        )}
+                    />
+                    <div className="grid grid-cols-2 gap-4">
+                        <FormField
+                            control={form.control}
+                            name="type"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Tipo</FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl>
+                                        <SelectTrigger><SelectValue placeholder="Selecione o tipo" /></SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        <SelectItem value="Infoproduto">Infoproduto</SelectItem>
+                                        <SelectItem value="Encapsulado">Encapsulado</SelectItem>
+                                        <SelectItem value="SaaS">SaaS</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="format"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Formato</FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl>
+                                        <SelectTrigger><SelectValue placeholder="Selecione o formato" /></SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        <SelectItem value="VSL">VSL</SelectItem>
+                                        <SelectItem value="Landing Page">Landing Page</SelectItem>
+                                        <SelectItem value="Quiz">Quiz</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+                      <FormField
+                        control={form.control}
+                        name="imageUrl"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Imagem da Oferta</FormLabel>
+                                <FormControl>
+                                    <div>
+                                        <Input 
+                                            type="file" 
+                                            className="hidden"
+                                            id="image-upload"
+                                            accept="image/png, image/jpeg, image/gif"
+                                            onChange={(e) => handleImageChange(e, field.onChange)}
+                                        />
+                                        <label htmlFor="image-upload" className="cursor-pointer inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 h-10 px-4 py-2 border border-input bg-background hover:bg-primary/20 hover:text-primary w-full">
+                                            <Upload className="mr-2 h-4 w-4" />
+                                            Carregar Imagem
+                                        </label>
+                                    </div>
+                                </FormControl>
+                                {imagePreview && (
+                                    <div className="mt-4 relative w-full h-48 rounded-md overflow-hidden border border-border">
+                                        <Image src={imagePreview} alt="Prévia da imagem" layout="fill" objectFit="cover" />
+                                    </div>
+                                )}
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="vendasUrl"
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel>URL da Página de Vendas</FormLabel>
+                            <FormControl>
+                                <Input placeholder="https://..." {...field} />
+                            </FormControl>
+                            <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="checkoutUrl"
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel>URL do Checkout</FormLabel>
+                            <FormControl>
+                                <Input placeholder="https://..." {...field} />
+                            </FormControl>
+                            <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    {/* Botões do Footer ficam fora da área de rolagem */}
+                    <DialogFooter className="pt-4 !mt-8">
+                        <Button type="button" variant="ghost" onClick={onClose}>Cancelar</Button>
+                        <Button type="submit">
+                            <Save className="mr-2 h-4 w-4"/>
+                            Salvar Oferta
+                        </Button>
+                    </DialogFooter>
+                </form>
+            </Form>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );
 }
-
