@@ -108,7 +108,7 @@ export function OfferFormDialog({ isOpen, onClose, onSave, oferta }: OfferFormDi
         setImagePreview(null);
       }
     }
-  }, [oferta, form, isOpen]);
+  }, [oferta, isOpen]);
   
   const onSubmit = (data: OfferFormData) => {
     const ofertaToSave: Oferta = {
@@ -219,7 +219,7 @@ export function OfferFormDialog({ isOpen, onClose, onSave, oferta }: OfferFormDi
                                     checked={field.value?.includes(item.id)}
                                     onCheckedChange={(checked) => {
                                       return checked
-                                        ? field.onChange([...field.value, item.id])
+                                        ? field.onChange([...(field.value || []), item.id])
                                         : field.onChange(
                                             field.value?.filter(
                                               (value) => value !== item.id
