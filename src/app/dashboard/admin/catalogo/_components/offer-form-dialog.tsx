@@ -58,20 +58,22 @@ const formSchema = z.object({
 
 type OfferFormData = z.infer<typeof formSchema>;
 
+const defaultFormValues: OfferFormData = {
+  title: '',
+  type: 'Infoproduto',
+  format: ['VSL'],
+  status: 'estável',
+  imageUrl: '',
+  vendasUrl: '',
+  checkoutUrl: '',
+};
+
 export function OfferFormDialog({ isOpen, onClose, onSave, oferta }: OfferFormDialogProps) {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const form = useForm<OfferFormData>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      title: '',
-      type: 'Infoproduto',
-      format: ['VSL'],
-      status: 'estável',
-      imageUrl: '',
-      vendasUrl: '',
-      checkoutUrl: '',
-    },
+    defaultValues: defaultFormValues,
   });
   
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>, fieldChange: (value: string) => void) => {
@@ -102,15 +104,7 @@ export function OfferFormDialog({ isOpen, onClose, onSave, oferta }: OfferFormDi
         });
         setImagePreview(oferta.imageUrl);
       } else {
-        form.reset({
-          title: '',
-          type: 'Infoproduto',
-          format: ['VSL'],
-          status: 'estável',
-          imageUrl: '',
-          vendasUrl: '',
-          checkoutUrl: '',
-        });
+        form.reset(defaultFormValues);
         setImagePreview(null);
       }
     }
