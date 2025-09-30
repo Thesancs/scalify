@@ -96,7 +96,7 @@ export function OfferFormDialog({ isOpen, onClose, onSave, oferta }: OfferFormDi
         form.reset({
           title: oferta.title,
           type: oferta.type,
-          format: oferta.format,
+          format: [...oferta.format], // Create a new array reference
           status: oferta.status,
           imageUrl: oferta.imageUrl,
           vendasUrl: oferta.vendasUrl || '',
@@ -108,7 +108,7 @@ export function OfferFormDialog({ isOpen, onClose, onSave, oferta }: OfferFormDi
         setImagePreview(null);
       }
     }
-  }, [oferta, isOpen]);
+  }, [oferta, isOpen, form.reset]);
   
   const onSubmit = (data: OfferFormData) => {
     const ofertaToSave: Oferta = {
