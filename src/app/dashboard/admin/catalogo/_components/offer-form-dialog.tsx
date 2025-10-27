@@ -108,7 +108,7 @@ export function OfferFormDialog({ isOpen, onClose, onSave, oferta }: OfferFormDi
         setImagePreview(null);
       }
     }
-  }, [oferta, isOpen]);
+  }, [oferta, isOpen, form.reset]);
   
   const onSubmit = (data: OfferFormData) => {
     const ofertaToSave: Oferta = {
@@ -311,3 +311,5 @@ export function OfferFormDialog({ isOpen, onClose, onSave, oferta }: OfferFormDi
     </Dialog>
   );
 }
+
+    
